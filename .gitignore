@@ -50,3 +50,4 @@ samconfig.toml
 *.csv
 # Temporary files
 tempCodeRunnerFile.py
+*models
