@@ -43,3 +43,10 @@ samconfig.toml
 *.pkl
 *.model
 *.h5
+*.joblib 
+/models/
+# Data files (sensitive or large)
+*.xlsx
+*.csv
+# Temporary files
+tempCodeRunnerFile.py
