@@ -19,23 +19,6 @@ class FoodCategoryRules:
 
     def _initialize_category_rules(self) -> Dict[str, Dict[str, Any]]:
         return {
-            "Welcome_Drinks": {
-                "min_quantity": "100ml",
-                "max_quantity": "120ml",
-                "default_quantity": "120ml",
-                "vc_price": 180,
-                "adjustments": {
-                    "large_event": lambda total_guest_count: "120ml" if total_guest_count > 50 else "120ml",
-                    "variety_count": lambda count: {
-                                                    1: "120ml",
-                                                    2: "100ml",
-                                                    3: "80ml",
-                                                    4: "70ml",
-                                                    5: "60ml"
-                                                }.get(count, "60ml")
-                    
-                }
-            },
             "Biryani": {
                 "min_quantity": "250g",
                 "max_quantity": "550g",
@@ -48,25 +31,33 @@ class FoodCategoryRules:
                         "320g" if total_items >= 3 else "300g")
                 }
             },
-             "Bakery": {
-                "min_quantity": "50g",
-                "max_quantity": "100g",
-                "default_quantity": "50g",
-                "vc_price": 70,
-            },
-             "Sides": {
-                "min_quantity": "50g",
+            "Welcome_Drinks": {
+                "min_quantity": "100ml",
+                "max_quantity": "120ml",
+                "default_quantity": "120ml",
+                "vc_price": 180,
                 "max_quantity": "70g",
                 "default_quantity": "50g",
                 "vc_price": 150,
             },
+            "Paan": {
+                "min_quantity": "1pcs",
+                "max_quantity": "2pcs",
+                "default_quantity": "1pcs",
+                "vc_price": 150,
+            },  
              "Sides_pcs": {
                 "min_quantity": "1pcs",
                 "max_quantity": "2pcs",
                 "default_quantity": "1pcs",
                 "vc_price": 150,
             },  
-             
+             "Sides": {
+                "min_quantity": "15g",
+                "max_quantity": "40g",
+                "default_quantity": "30g",
+                "vc_price": 70,
+            },
             "Salad": {
                 "min_quantity": "50g",
                 "max_quantity": "50g",
@@ -301,12 +292,13 @@ class FoodCategoryRules:
                 "default_quantity": "50g",
                 "vc_price": 150,
             },
-            "Paan": {
-                "min_quantity": "1pcs",
-                "max_quantity": "1pcs",
-                "default_quantity": "1pcs",
+            "Dips": {
+                "min_quantity": "10g",
+                "max_quantity": "20pcs",
+                "default_quantity": "15g",
                 "vc_price": 50,
             },
+            
             "Papad": {
                 "min_quantity": "1pcs",
                 "max_quantity": "3pcs",
@@ -398,7 +390,11 @@ class FoodCategoryRules:
    
 
     def normalize_category_name(self, category: str) -> str:
-        return category.replace(" ", "_").strip()
+        normalized = category.replace(" ", "_").strip()
+        if normalized == "Bread":
+            return "Breads"
+        return normalized
+
     
 
     def get_default_quantity(self, category: str) -> Tuple[float, str]:
@@ -458,7 +454,26 @@ class FoodCategoryRules:
         """
         # Extract key information
         category = item_properties['category']
-        quantity_rule = item_properties.get('quantity_rule', {})
+        quantity_rule = item_properties.get('quantity_rule')
+        # Ensure quantity_rule is not None - ADD THIS CHECK
+        if quantity_rule is None:
+            normalized_category = self.normalize_category_name(category)
+        
+        # Look up the rule from category_rules
+            if normalized_category in self.category_rules:
+                quantity_rule = self.category_rules[normalized_category]
+                # Log that we're using a fallback
+                logger.debug(f"Using fallback category rule for {item_name} (category: {category})")
+            else:
+                # If no rule exists for this category, use a safe default
+                quantity_rule = {
+                    "default_quantity": "100g",
+                    "min_quantity": "50g",
+                    "max_quantity": "150g",
+                    "vc_price": 100,
+                }
+                logger.warning(f"No category rule found for {category}, using generic defaults for {item_name}")
+        
         
         # Determine base quantity from category rules
         default_qty_str = quantity_rule.get('default_quantity', '100g')

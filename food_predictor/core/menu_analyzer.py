@@ -7,11 +7,28 @@ from food_predictor.data.item_service import ItemService,ItemMetadata
 from food_predictor.core.category_rules import FoodCategoryRules
 
 logger = logging.getLogger("MenuAnalyzer")
+import time
+from threading import Lock
+
+class GeminiRateLimiter:
+    def __init__(self, max_calls_per_second):
+        self.max_calls = max_calls_per_second
+        self.min_interval = 1.0 / max_calls_per_second
+        self.last_call = 0.0
+        self.lock = Lock()
+
+    def wait(self):
+        with self.lock:
+            now = time.time()
+            wait_time = self.min_interval - (now - self.last_call)
+            if wait_time > 0:
+                time.sleep(wait_time)
+            self.last_call = time.time()
 
 class MenuAnalyzer:
     """
     Analyzes menu compositions, builds comprehensive menu contexts,
-    and identifies main items using semantic analysis.
+    and identifies main items using semantic analysis.s
     """
     
     def __init__(self, food_rules, item_service):
@@ -24,8 +41,10 @@ class MenuAnalyzer:
         """
         self.food_rules = food_rules
         self.item_service = item_service
+        self.gemini_rate_limiter = GeminiRateLimiter(max_calls_per_second=10)  # You can reduce to 5 if needed
+
         # API credentials for main item identification
-        self.GEMINI_API_KEY = "AIzaSyBK85SLAWyjTJ23_1IVl12L06S0nruLwr4"
+        self.GEMINI_API_KEY = "AIzaSyCtSNFgv474qPIJPHipmip0Lavi3T-k8rw"
         self.GEMINI_API_URL = (
             f"https://generativelanguage.googleapis.com/v1beta/models/"
             f"gemini-1.5-flash-latest:generateContent?key={self.GEMINI_API_KEY}")
@@ -120,6 +139,13 @@ class MenuAnalyzer:
             Detailed dictionary of main items across vegetarian and non-vegetarian categories
         """
         # Initialize result structure
+        if getattr(self, '_evaluation_mode', False):
+            logger.info("Evaluation mode: using fallback instead of Gemini")
+            return self._identify_main_items_fallback(menu_context, meal_type, categories)
+
+                
+        
+        
         main_items_info = {
             'has_main_item': False,
             'primary_main_category': None,
@@ -142,6 +168,7 @@ class MenuAnalyzer:
         # Only proceed with Gemini API if credentials are available
         if self.GEMINI_API_KEY and self.GEMINI_API_URL:
             try:
+                #
                 # Prepare the prompt
                 selected_items = menu_context['items']
                 prompt =    (
@@ -153,12 +180,8 @@ class MenuAnalyzer:
                     "and beverages—they are not main items under this definition. \n\n"
                     f"The Menu is for a  {meal_type} event .\n"
                     f"The following broad categories are present in the menu: {', '.join(categories)}.\n"
-                    "Given the following menu items *in the order provided*, return every qualifying main item "
-                    "with a suitable category "
-                    "'Biryani', 'Flavoured Rice', 'Steamed Rice', 'Bread', etc. \n\n"
                     "Respond *strictly* as a JSON array.  Each element must have: \n"
                     "  • 'main_item' - the item name exactly as given\n"
-                    "  • 'category' - your chosen category name\n\n"
                     "If no main items fit the high-consumption definition, return an empty list []. \n\n"
                     "Menu items:\n"
                     f"{', '.join(selected_items)}"
@@ -175,6 +198,7 @@ class MenuAnalyzer:
                         }]
                     }]
                 }
+                self.gemini_rate_limiter.wait()
                 response = requests.post(
                     self.GEMINI_API_URL,
                     headers={"Content-Type": "application/json"},
@@ -220,26 +244,31 @@ class MenuAnalyzer:
                     main_items_info['has_main_item'] = True
                     for item in api_result:
                         main_item = item['main_item']
-                        category = item['category']
+            
                         
                         # Validate that the main item exists in selected_items
                         if main_item in selected_items:
                             # Determine veg/non-veg status
                             item_properties = menu_context['item_properties'].get(main_item, {})
                             is_veg = item_properties.get('is_veg', 'veg')
-
+                            category = item_properties.get('category')
                             # Update main items info
                             main_items_info['categories_found'].append(category)
                             
                             if is_veg == 'veg':
                                 main_items_info['veg']['categories_found'].append(category)
-                                main_items_info['veg']['items_by_category'][category] = [main_item]
+                                if category not in main_items_info['veg']['items_by_category']:
+                                    main_items_info['veg']['items_by_category'][category] = []
+                                
+                                main_items_info['veg']['items_by_category'][category].append(main_item)
                                 if not main_items_info['veg']['primary_main_category']:
                                     main_items_info['veg']['primary_main_category'] = category
                                     main_items_info['veg']['primary_main_item'] = main_item
                             else:
                                 main_items_info['non_veg']['categories_found'].append(category)
-                                main_items_info['non_veg']['items_by_category'][category] = [main_item]
+                                if category not in main_items_info['non_veg']['items_by_category']:
+                                    main_items_info['non_veg']['items_by_category'][category] = []
+                                main_items_info['non_veg']['items_by_category'][category].append(main_item)
                                 if not main_items_info['non_veg']['primary_main_category']:
                                     main_items_info['non_veg']['primary_main_category'] = category
                                     main_items_info['non_veg']['primary_main_item'] = main_item
@@ -256,10 +285,90 @@ class MenuAnalyzer:
             except requests.RequestException as e:
                 logger.error(f"Gemini API request failed: {e}")
                 # Fall back to default logic
-                main_items_info = self.identify_main_items(menu_context)
+                main_items_info = self._identify_main_items_fallback(menu_context,meal_type,categories)
         else:
             # Use fallback if no API credentials
-            main_items_info = self.identify_main_items(menu_context)
+            main_items_info = self._identify_main_items_fallback(menu_context,meal_type,categories)
 
         return main_items_info
 
+    def _identify_main_items_fallback(self, menu_context,meal_type,categories):
+        """
+        Fallback method for identifying main items when the API is unavailable.
+        Uses hardcoded category list to identify main items.
+        """
+        # Start with the same structure as the main method
+        main_items_info = {
+            'has_main_item': False,
+            'primary_main_category': None,
+            'primary_main_item': None,
+            'categories_found': [],
+            'veg': {
+                'categories_found': [],
+                'items_by_category': {},
+                'primary_main_category': None,
+                'primary_main_item': None
+            },
+            'non_veg': {
+                'categories_found': [],
+                'items_by_category': {},
+                'primary_main_category': None,
+                'primary_main_item': None
+            }
+        }
+        
+        # List of categories that are likely to contain main items
+        main_item_categories = [
+            "Biryani", "Rice", "Flavored_Rice", "Curries", 
+            "Fried_Rice", "Breads", "Italian", "Breakfast", 
+            "Breakfast_pcs"
+        ]
+        
+        # Iterate through menu items to find main items
+        for category in main_item_categories:
+            if category in menu_context['items_by_category']:
+                main_items_info['has_main_item'] = True
+                main_items_info['categories_found'].append(category)
+                
+                # Process items in this category
+                for item in menu_context['items_by_category'][category]:
+                    # Get item properties 
+                    item_properties = menu_context['item_properties'].get(item, {})
+                    is_veg = item_properties.get('is_veg', 'veg')
+                    
+                    # Store in appropriate veg/non-veg section
+                    if is_veg == 'veg':
+                        if category not in main_items_info['veg']['categories_found']:
+                            main_items_info['veg']['categories_found'].append(category)
+                        
+                        if category not in main_items_info['veg']['items_by_category']:
+                            main_items_info['veg']['items_by_category'][category] = []
+                        
+                        main_items_info['veg']['items_by_category'][category].append(item)
+                        
+                        # Set as primary if not already set
+                        if not main_items_info['veg']['primary_main_category']:
+                            main_items_info['veg']['primary_main_category'] = category
+                            main_items_info['veg']['primary_main_item'] = item
+                    else:
+                        if category not in main_items_info['non_veg']['categories_found']:
+                            main_items_info['non_veg']['categories_found'].append(category)
+                            
+                        if category not in main_items_info['non_veg']['items_by_category']:
+                            main_items_info['non_veg']['items_by_category'][category] = []
+                            
+                        main_items_info['non_veg']['items_by_category'][category].append(item)
+                        
+                        # Set as primary if not already set
+                        if not main_items_info['non_veg']['primary_main_category']:
+                            main_items_info['non_veg']['primary_main_category'] = category
+                            main_items_info['non_veg']['primary_main_item'] = item
+                    
+                    # Set overall primary if not set
+                    if not main_items_info['primary_main_category']:
+                        main_items_info['primary_main_category'] = category
+                        main_items_info['primary_main_item'] = item
+                    
+                    logger.debug(f"Fallback identified main item: {item} (category: {category}, is_veg: {is_veg})")
+        
+        return main_items_info

@@ -22,7 +22,7 @@ wheels/
 *.egg
 
 # Jupyter Notebook
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
 # Environment & IDE
 .env
@@ -43,11 +43,16 @@ samconfig.toml
 *.pkl
 *.model
 *.h5
-*.joblib 
+*.joblib
 /models/
+
 # Data files (sensitive or large)
 *.xlsx
 *.csv
+
 # Temporary files
 tempCodeRunnerFile.py
 *models
+
+# Ignore the entire Sagemaker folder
+Sagemaker/

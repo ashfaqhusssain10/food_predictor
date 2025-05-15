@@ -3,8 +3,12 @@ import numpy as np
 import pandas as pd
 import logging
 from sklearn.preprocessing import RobustScaler, OneHotEncoder
+from sklearn.base import BaseEstimator,TransformerMixin
+from sklearn.compose import ColumnTransformer, make_column_selector
+from sklearn.pipeline import Pipeline
 from food_predictor.core.menu_analyzer import MenuAnalyzer
-
+from sklearn.compose import ColumnTransformer, make_column_selector
+from sklearn.pipeline import Pipeline
 from food_predictor.core.category_rules import FoodCategoryRules
 from food_predictor.data.item_service import ItemService
 from food_predictor.utils.quantity_utils import extract_quantity_value,extract_unit,validate_unit,infer_default_unit
@@ -12,22 +16,225 @@ from food_predictor.utils.quantity_utils import extract_quantity_value,extract_u
 
 logger = logging.getLogger(__name__)
 
+class FeatureSpaceManager(BaseEstimator, TransformerMixin):
+    """Handles dictionary-to-matrix conversion with consistent dimensionality.
+    
+    This transformer maintains exact sklearn compatibility:
+    - Preserves identical feature space between fit/transform
+    - Handles dynamic feature dictionaries
+    - Produces deterministic output dimensions
+    """
+    
+    def __init__(self):
+        # Following sklearn naming conventions
+        self.feature_names_in_ = None
+        self.n_features_in_ = None
+        self._feature_indices = {}
+        
+    def fit(self, X, y=None):
+        """Learn feature space from dictionary or list of dictionaries.
+        
+        Parameters
+        ----------
+        X : dict or list of dict
+            Training feature dictionaries
+        
+        Returns
+        -------
+        self : object
+            Returns self for method chaining
+        """
+        # Handle both single dictionary and list of dictionaries
+        if isinstance(X, dict):
+            dict_list = [X]
+        else:
+            dict_list = X
+            
+        # Build canonical feature space
+        all_features = set()
+        for feature_dict in dict_list:
+            all_features.update(feature_dict.keys())
+            
+        # Sort for determinism - critical for consistent output
+        self.feature_names_in_ = sorted(list(all_features))
+        self.n_features_in_ = len(self.feature_names_in_)
+        
+        # Build fast lookup for O(1) access
+        self._feature_indices = {feat: i for i, feat in enumerate(self.feature_names_in_)}
+        
+        return self
+        
+    def transform(self, X):
+        """Transform dictionaries to fixed-dimension arrays.
+        
+        Parameters
+        ----------
+        X : dict or list of dict
+            Feature dictionaries to transform
+            
+        Returns
+        -------
+        X_transformed : ndarray
+            Shape (n_samples, n_features_in_)
+        """
+        # Handle both single dictionary and list of dictionaries
+        if isinstance(X, dict):
+            dict_list = [X]
+        else:
+            dict_list = X
+            
+        # Initialize output matrix with zeros
+        result = np.zeros((len(dict_list), self.n_features_in_))
+        
+        # Populate with values from dictionaries
+        for i, feature_dict in enumerate(dict_list):
+            for feat_name, feat_value in feature_dict.items():
+                if feat_name in self._feature_indices:
+                    idx = self._feature_indices[feat_name]
+                    result[i, idx] = feat_value
+        
+        return result
+        
+    def get_feature_names_out(self, input_features=None):
+        """Get output feature names.
+        
+        Parameters
+        ----------
+        input_features : None
+            Unused, present for API compatibility
+            
+        Returns
+        -------
+        feature_names_out : ndarray
+            Output feature names
+        """
+        return np.array(self.feature_names_in_)
+
+
+
+class FeatureTypeSplitter(BaseEstimator, TransformerMixin):
+    """Splits feature matrix by type and applies appropriate scaling.
+    
+    This follows the compositional pattern from sklearn documentation,
+    but adapts it for dynamic feature space.
+    """
+    
+    def __init__(self):
+        self.feature_types = {
+            'ratio': lambda name: 'ratio' in name or 'multiplier' in name or 'scale_factor' in name,
+            'binary': lambda name: name.startswith('is_') or name.startswith('has_') or '_present' in name,
+            'network': lambda name: 'network_complexity' in name or 'second_order' in name,
+            'transformed': lambda name: 'log_qty' in name or 'sqrt_qty' in name,
+            'raw_qty': lambda name: 'raw_qty' in name,
+            'standard': lambda name: True  # Catch-all for other features
+        }
+        
+        self.type_scalers = {}
+        self.feature_indices = {}
+        self.feature_names_in_ = None
+        
+    def fit(self, X, y=None):
+        """Fit scalers on appropriate feature subsets.
+        
+        Parameters
+        ----------
+        X : array-like
+            Feature matrix with columns corresponding to feature_names_in_
+            
+        Returns
+        -------
+        self : object
+        """
+        # Store feature names for validation
+        if hasattr(X, 'columns'):
+            # DataFrame case
+            self.feature_names_in_ = X.columns.tolist()
+        else:
+            # Get from outer scope - not ideal but practical
+            self.feature_names_in_ = self.feature_space_manager.feature_names_in_
+            
+        # Group indices by feature type
+        for type_name, type_predicate in self.feature_types.items():
+            # Get indices of features matching this type
+            indices = [i for i, name in enumerate(self.feature_names_in_) 
+                      if type_predicate(name)]
+            
+            if not indices:
+                continue
+                
+            self.feature_indices[type_name] = indices
+            
+            # Create appropriate scaler for this type
+            if type_name in ('binary', 'network'):
+                # No scaling for binary features
+                self.type_scalers[type_name] = None
+            elif type_name == 'ratio':
+                # No centering for ratio features to preserve semantics
+                self.type_scalers[type_name] = RobustScaler(
+                    with_centering=False, 
+                    with_scaling=True,
+                    quantile_range=(10.0, 90.0)
+                )
+            else:
+                # Standard robust scaling for other features
+                self.type_scalers[type_name] = RobustScaler()
+                
+            # Fit scaler if needed
+            if self.type_scalers[type_name] is not None:
+                # Extract feature subset and fit
+                X_subset = X[:, indices]
+                self.type_scalers[type_name].fit(X_subset)
+                
+        return self
+        
+    def transform(self, X):
+        """Transform features by applying appropriate scalers.
+        
+        Parameters
+        ----------
+        X : array-like
+            Feature matrix with same structure as in fit
+            
+        Returns
+        -------
+        X_scaled : ndarray
+            Transformed features
+        """
+        X_scaled = X.copy()
+        
+        # Apply each type-specific scaler
+        for type_name, indices in self.feature_indices.items():
+            scaler = self.type_scalers[type_name]
+            
+            if scaler is not None:
+                X_subset = X[:, indices]
+                X_scaled[:, indices] = scaler.transform(X_subset)
+                
+        return X_scaled
+    
 class FeatureEngineer:
     """
     Handles feature extraction, transformation, and engineering for food prediction models.
     
     This class is responsible for:
-    1. Encoding categorical variables
+    1. Encoding categorical variabless
     2. Extracting menu context features
     3. Handling inter-category dependencies
     4. Scaling numerical features
     """
     
-    def __init__(self,food_rules= None):
+    def __init__(self,food_rules= None,menu_analyzer=None):
         """Initialize feature engineering components."""
         self.event_time_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
         self.meal_type_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
         self.event_type_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+        self.feature_space_manager = FeatureSpaceManager()
+        self.feature_type_splitter = FeatureTypeSplitter()
+        self.feature_type_splitter.feature_space_manager = self.feature_space_manager
+        self.menu_feature_keys = set()
+        self.menu_analyzer =  menu_analyzer
+        
+        
         self.guest_scaler = None
         self.ratio_feature_scaler = None
         self.std_feature_scaler = None
@@ -36,6 +243,8 @@ class FeatureEngineer:
         self.raw_qty_feature_scaler = None
         self.menu_feature_scaler = None
         self.food_rules = food_rules
+        self.scalers_fitted = False
+        self.expected_columns = []
     def fit_encoders(self, data):
         """
         Fit categorical encoders on training data.
@@ -47,6 +256,172 @@ class FeatureEngineer:
         self.meal_type_encoder.fit(data[['Meal_Time']])
         self.event_type_encoder.fit(data[['Event_Type']])
         
+    def collect_menu_features(self, data):
+        """
+        Collect menu features across all orders for proper statistical distribution.
+        
+        Args:
+            data (DataFrame): Training data with order details
+            
+        Returns:
+            tuple: (all_menu_features, feature_matrix)
+        """
+        # Efficient collection of menu features across all orders
+        all_menu_features = []
+        unique_orders = data['Order_Number'].unique()
+        logger.info(f"Collecting menu features across {len(unique_orders)} orders")
+        
+        # Progress tracking for large datasets
+        progress_interval = max(1, len(unique_orders) // 10)
+        
+        for idx, order_number in enumerate(unique_orders):
+            order_data = data[data['Order_Number'] == order_number]
+            
+            # Skip empty orders
+            if order_data.empty:
+                continue
+                
+            # Extract order metadata efficiently
+            evt_time = order_data['Event_Time'].iloc[0]
+            meal_t = order_data['Meal_Time'].iloc[0]
+            evt_type = order_data['Event_Type'].iloc[0]
+            
+            # Handle column name variations
+            guests = (order_data['total_guest_count'].iloc[0] if 'total_guest_count' in order_data.columns
+                    else order_data['Guest_Count'].iloc[0] if 'Guest_Count' in order_data.columns
+                    else 50)  # Default fallback
+            
+            vegs = (order_data['Veg_Count'].iloc[0] if 'Veg_Count' in order_data.columns
+                else int(0.4 * guests))  # Default fallback
+                
+            items = order_data['Item_name'].unique().tolist()
+            
+            # Build menu context - reuse existing implementation
+            menu_context = self.menu_analyzer.build_menu_context(
+                evt_time, meal_t, evt_type, guests, vegs, items
+            )
+            
+            # Extract features with comprehensive context
+            menu_features = self.extract_menu_features(
+                data=order_data, 
+                menu_context=menu_context, 
+                food_rules=self.food_rules
+            )
+            
+            all_menu_features.append(menu_features)
+            
+            # Log progress for large datasets
+            if (idx + 1) % progress_interval == 0:
+                logger.debug(f"Processed {idx + 1}/{len(unique_orders)} orders...")
+        
+        logger.info(f"Collected menu features from {len(all_menu_features)} orders")
+        
+        return all_menu_features
+    
+    def fit_scalers(self, data, menu_features_samples):
+        """
+        Fit all scalers on proper feature distributions across all training samples.
+        
+        Args:
+            data (DataFrame): Training data with numeric columns
+            menu_features_samples (list): List of menu feature dictionaries from all orders
+        """
+        # Fit guest count scaler - standard practice for this column
+        if 'Guest_Count' in data.columns:
+            guest_count = data[['Guest_Count']].values.astype(float)
+            self.guest_scaler = RobustScaler()
+            self.guest_scaler.fit(guest_count)
+            logger.info(f"Fitted guest count scaler on {len(guest_count)} samples with shape {guest_count.shape}")
+        
+        # Validate inputs
+        if not menu_features_samples:
+            logger.warning("No menu feature samples provided - scalers not fitted")
+            return
+        
+        # Performance optimization: estimate memory requirements
+        sample_size = len(menu_features_samples)
+        sample_feature_count = len(menu_features_samples[0]) if menu_features_samples else 0
+        estimated_mb = (sample_size * sample_feature_count * 8) / (1024 * 1024)  # 8 bytes per float64
+        
+        if estimated_mb > 1000:  # 1 GB threshold
+            logger.warning(f"Large feature matrix expected: ~{estimated_mb:.1f} MB. Consider batch processing.")
+        
+        # Step 1: Build canonical feature space across ALL samples
+        logger.info(f"Building canonical feature space from {len(menu_features_samples)} samples")
+        self.feature_space_manager.fit(menu_features_samples)
+        feature_count = self.feature_space_manager.n_features_in_
+        logger.info(f"Canonical feature space contains {feature_count} dimensions")
+        
+        # Step 2: Transform all samples to consistent feature matrix with shape (n_samples, n_features)
+        # This is the critical architectural improvement - fitting on full distributions
+        logger.info("Transforming all samples to consistent feature matrix")
+        feature_matrix = self.feature_space_manager.transform(menu_features_samples)
+        
+        # Step 3: Fit the feature type splitter on the FULL feature matrix
+        logger.info(f"Fitting specialized scalers on feature matrix with shape {feature_matrix.shape}")
+        self.feature_type_splitter.fit(feature_matrix)
+        
+        # Log detailed statistics about fitted scalers
+        type_counts = {type_name: len(indices) for type_name, indices in 
+                    self.feature_type_splitter.feature_indices.items()}
+        logger.info(f"Feature type distribution: {type_counts}")
+        
+        # Mark scalers as fitted and store feature keys for consistency
+        self.scalers_fitted = True
+        self.menu_feature_keys = set(self.feature_space_manager.feature_names_in_)
+        logger.info("All scalers successfully fitted on proper feature distributions")
+    
+    
+    def create_feature_pipeline(self):
+        """
+        Create a composite sklearn pipeline with ColumnTransformer for feature processing.
+        """
+
+        
+        # Step 1: Define the transformers for different feature types
+        categorical_cols = ['Event_Time', 'Meal_Time', 'Event_Type']
+        
+        # REUSE your pre-fitted encoders instead of creating new ones
+        categorical_transformer = Pipeline([
+            ('onehot_event', self.event_time_encoder),
+            ('onehot_meal', self.meal_type_encoder),
+            ('onehot_type', self.event_type_encoder)
+        ])
+                # Numerical feature processing with optional guest count
+        numerical_transformer = Pipeline([
+            ('scaler', RobustScaler())
+        ])
+        
+        # Skip manual dimension calculation since ColumnTransformer will determine dimensions
+        
+        # Create the ColumnTransformer
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('cat', categorical_transformer, categorical_cols),
+                ('num', numerical_transformer, ['Guest_Count']),
+            ],
+            remainder='drop',
+            verbose_feature_names_out=False
+        )
+        
+        # Feature names mapping with simpler structure
+        feature_names_mapping = {
+            'categorical': {
+                'start_idx': 0,
+                'end_idx': None  # Will be determined during transform
+            },
+            'numerical': {
+                'start_idx': None,  # Will be determined during transform
+                'end_idx': None  
+            },
+            'menu_features': {
+                'start_idx': None,
+                'end_idx': None
+            }
+        }
+        
+        return preprocessor, feature_names_mapping
+    
     def prepare_features(self, data, menu_features=None):
         """
         Prepare feature matrix with enhanced dependency features.
@@ -54,202 +429,173 @@ class FeatureEngineer:
         Args:
             data (DataFrame): Input data
             menu_features (dict, optional): Menu context features
-            
+                
         Returns:
             ndarray: Feature matrix
         """
-        # 1) encode the three categorical columns (all return arrays of shape (n_rows, n_encoded))
-        event_time_encoded = self.event_time_encoder.transform(data[['Event_Time']])
-        meal_type_encoded = self.meal_type_encoder.transform(data[['Meal_Time']])
-        event_type_encoded = self.event_type_encoder.transform(data[['Event_Type']])
+        # Ensure we have a copy to avoid SettingWithCopyWarning
+        X = data.copy()
         
-        base_features = np.hstack([
-            event_time_encoded,
-            meal_type_encoded,
-            event_type_encoded
-        ])  # shape = (n_rows, sum_of_encoded_dims)
+        # Ensure Guest_Count column exists - critical for pipeline consistency
+        if 'Guest_Count' not in X.columns and 'total_guest_count' in X.columns:
+            X['Guest_Count'] = X['total_guest_count']
+        elif 'Guest_Count' not in X.columns:
+            # Create dummy column to avoid pipeline errors
+            X['Guest_Count'] = 0
+        
+        # 1) encode the three categorical columns (all return arrays of shape (n_rows, n_encoded))
+        if not hasattr(self, '_feature_pipeline'):
+            self._feature_pipeline, _ = self.create_feature_pipeline()
+            self._feature_pipeline.fit(X)
+        base_features = self._feature_pipeline.transform(X) 
 
-        features = base_features
+    
 
         # 2) Add guest count if present
-        if 'Guest_Count' in data.columns:
-            guest_count = data[['Guest_Count']].values.astype(float)
-            if not self.guest_scaler:
-                self.guest_scaler = RobustScaler()
-                self.guest_scaler.fit(guest_count)
+        guest_count = X[['Guest_Count']].values.astype(float)
+        if self.guest_scaler is None:
+            guest_scaled = guest_count
+        else:
             guest_scaled = self.guest_scaler.transform(guest_count)
-            features = np.hstack([features, guest_scaled])
+        features = np.hstack([base_features, guest_scaled])
 
         # 3) Add menu context features (broadcasted to every row)
         if menu_features is not None:
-            # Determine number of rows for broadcasting
-            n_rows = features.shape[0]
+            if hasattr(self, 'menu_feature_keys') and self.menu_feature_keys:
+                for key in self.menu_feature_keys:
+                    if key not in menu_features:
+                        menu_features[key] = 0.0
             
-            # --- 3.1. FEATURE TYPE CATEGORIZATION ---
-            # Separate features by type to apply appropriate transformations
+            # Transform menu features with consistent dimensionality
+            menu_array = self.feature_space_manager.transform([menu_features])
             
-            # 1. Ratio-based features require minimal transformation to preserve mathematical relationships
-            ratio_features = [col for col in menu_features.keys() 
-                            if ('ratio' in col or 
-                                'multiplier' in col or 
-                                'scale_factor' in col)]
+            # Apply proper type-specific scaling with FeatureTypeSplitter
+            menu_array_scaled = self.feature_type_splitter.transform(menu_array)
             
-            # 2. Binary features (0/1) should remain untransformed
-            binary_features = [col for col in menu_features.keys() 
-                            if (col.startswith('is_') or 
-                                col.startswith('has_') or 
-                                '_present' in col or 
-                                '_both_present' in col)]
+            # Broadcast to match number of rows in input data
+            n_rows = X.shape[0]
+            menu_features_repeated = np.tile(menu_array_scaled, (n_rows, 1))
             
-            # Network complexity features for dependency hubs
-            network_features = [col for col in menu_features.keys()
-                            if ('network_complexity' in col or 
-                                'second_order' in col or 
-                                '_presence_ratio' in col)]
-            
-            # Interaction features for context-sensitive categories
-            interaction_features = [col for col in menu_features.keys()
-                                if ('_interaction' in col)]
-            
-            # Transformed quantity features for small-quantity items
-            transformed_qty_features = [col for col in menu_features.keys()
-                                    if ('log_qty' in col or 
-                                        'sqrt_qty' in col)]
-            
-            # Raw quantity features (preserve without centering)
-            raw_qty_features = [col for col in menu_features.keys()
-                            if 'raw_qty' in col]
-            
-            # 3. Count-based features benefit from robust scaling
-            count_features = [col for col in menu_features.keys() 
-                            if ('count' in col or 
-                                'variety' in col or 
-                                'items_per' in col)]
-            
-            # 4. Remaining features get standard robust scaling
-            standard_features = [col for col in menu_features.keys() 
-                                if col not in ratio_features + 
-                                            binary_features + 
-                                            count_features]
-            
-            # Track which feature matrices we'll need to combine
-            feature_matrices = []
-            
-            # --- 3.2. PROCESS RATIO FEATURES ---
-            if ratio_features:
-                ratio_values = [menu_features.get(col, 0.0) for col in ratio_features]
-                ratio_matrix = np.array([ratio_values])
-                
-                # Apply minimal scaling - no centering to preserve multiplier semantics
-                if not self.ratio_feature_scaler:
-                    self.ratio_feature_scaler = RobustScaler(with_centering=False, 
-                                                            with_scaling=True,
-                                                            quantile_range=(10.0, 90.0))
-                    self.ratio_feature_scaler.fit(ratio_matrix)
-                
-                # Transform and broadcast to all rows
-                ratio_scaled = self.ratio_feature_scaler.transform(ratio_matrix)
-                ratio_repeated = np.repeat(ratio_scaled, n_rows, axis=0)
-                feature_matrices.append(ratio_repeated)
-                
-                # Log ratio feature details for debugging
-                logger.debug(f"Processed {len(ratio_features)} ratio features")
-            
-            # --- 3.3. PROCESS BINARY FEATURES ---
-            if binary_features:
-                binary_values = [float(menu_features.get(col, 0.0)) for col in binary_features]
-                binary_matrix = np.array([binary_values])
-                
-                # No transformation needed, just broadcast to all rows
-                binary_repeated = np.repeat(binary_matrix, n_rows, axis=0)
-                feature_matrices.append(binary_repeated)
-                
-                logger.debug(f"Processed {len(binary_features)} binary features")
-            
-            # --- 3.4. PROCESS NETWORK FEATURES ---
-            if network_features:
-                network_values = [menu_features.get(col, 0.0) for col in network_features]
-                network_matrix = np.array([network_values])
-                
-                if not self.network_feature_scaler:
-                    # Use robust scaling without centering to preserve network structure
-                    self.network_feature_scaler = RobustScaler(with_centering=False, 
-                                                            with_scaling=True,
-                                                            quantile_range=(5.0, 95.0))
-                    self.network_feature_scaler.fit(network_matrix)
-                
-                network_scaled = self.network_feature_scaler.transform(network_matrix)
-                network_repeated = np.repeat(network_scaled, n_rows, axis=0)
-                feature_matrices.append(network_repeated)
-            
-            # --- 3.5. PROCESS INTERACTION FEATURES ---
-            if interaction_features:
-                interaction_values = [menu_features.get(col, 0.0) for col in interaction_features]
-                interaction_matrix = np.array([interaction_values])
-                interaction_repeated = np.repeat(interaction_matrix, n_rows, axis=0)
-                feature_matrices.append(interaction_repeated)
-            
-            # --- 3.6. PROCESS TRANSFORMED QUANTITY FEATURES ---
-            if transformed_qty_features:
-                transform_values = [menu_features.get(col, 0.0) for col in transformed_qty_features]
-                transform_matrix = np.array([transform_values])
-                
-                # These already have non-linear transformation but benefit from light scaling
-                if not self.transform_feature_scaler:
-                    self.transform_feature_scaler = RobustScaler(with_centering=False,
-                                                            with_scaling=True)
-                    self.transform_feature_scaler.fit(transform_matrix)
-                
-                transform_scaled = self.transform_feature_scaler.transform(transform_matrix)
-                transform_repeated = np.repeat(transform_scaled, n_rows, axis=0)
-                feature_matrices.append(transform_repeated)
-            
-            # --- 3.7. PROCESS RAW QUANTITY FEATURES ---
-            if raw_qty_features:
-                raw_qty_values = [menu_features.get(col, 0.0) for col in raw_qty_features]
-                raw_qty_matrix = np.array([raw_qty_values])
-                
-                if not self.raw_qty_feature_scaler:
-                    self.raw_qty_feature_scaler = RobustScaler(with_centering=False,
-                                                            with_scaling=True)
-                    self.raw_qty_feature_scaler.fit(raw_qty_matrix)
-                
-                raw_qty_scaled = self.raw_qty_feature_scaler.transform(raw_qty_matrix)
-                raw_qty_repeated = np.repeat(raw_qty_scaled, n_rows, axis=0)
-                feature_matrices.append(raw_qty_repeated)
-                
-            # --- 3.8. PROCESS COUNT AND STANDARD FEATURES ---
-            combined_standard_features = count_features + standard_features
-            if combined_standard_features:
-                std_values = [menu_features.get(col, 0.0) for col in combined_standard_features]
-                std_matrix = np.array([std_values])
-                
-                # Apply full robust scaling with centering and scaling
-                if not self.std_feature_scaler:
-                    self.std_feature_scaler = RobustScaler(with_centering=True, 
-                                                        with_scaling=True)
-                    self.std_feature_scaler.fit(std_matrix)
-                
-                # Transform and broadcast to all rows
-                std_scaled = self.std_feature_scaler.transform(std_matrix)
-                std_repeated = np.repeat(std_scaled, n_rows, axis=0)
-                feature_matrices.append(std_repeated)
-                
-                logger.debug(f"Processed {len(combined_standard_features)} standard features " 
-                            f"({len(count_features)} count, {len(standard_features)} other)")
-            
-            # --- 3.9. COMBINE ALL MENU FEATURE MATRICES ---
-            if feature_matrices:
-                menu_features_combined = np.hstack(feature_matrices)
-                
-                # Add to our existing feature matrix
-                features = np.hstack([features, menu_features_combined])
-                
-                # Log overall feature dimensions
-                logger.debug(f"Added {menu_features_combined.shape[1]} menu features to create "
-                            f"final feature matrix of shape {features.shape}")
+            # Combine with base features
+            features = np.hstack([base_features, menu_features_repeated])
+        else:
+            features = base_features
         
         return features
+        
+    
+    
+    
+    
+    
+    
+
+    # In feature_engineering.py, add a new method after prepare_features:
+
+    def select_features_by_registry(self, menu_features, feature_registry):
+        """
+        Select features from menu_features based on feature registry.
+        
+        Args:
+            menu_features (dict): Current menu features dictionary
+            feature_registry (list): List of feature names to include
+            
+        Returns:
+            dict: Filtered menu features with only registry features
+        """
+        # If no registry or empty registry, return original features
+        if not feature_registry:
+            return menu_features
+            
+        # Select only features in the registry, preserving order
+        filtered_features = {}
+        for feature_name in feature_registry:
+            # Use 0.0 as default if feature not in current menu features
+            filtered_features[feature_name] = menu_features.get(feature_name, 0.0)
+        
+        return filtered_features
+    def adjust_feature_dimensions(self, feature_matrix, target_dims):
+        """
+        Adjust feature matrix to match target dimensions.
+        
+        Args:
+            feature_matrix (ndarray): Input feature matrix
+            target_dims (int): Target number of dimensions
+            
+        Returns:
+            ndarray: Feature matrix with adjusted dimensions
+        """
+        current_dims = feature_matrix.shape[1]
+        
+        if current_dims == target_dims:
+            return feature_matrix
+            
+        if current_dims > target_dims:
+            # Truncate features to match target dimensions
+            return feature_matrix[:, :target_dims]
+        else:
+            # Pad with zeros to match target dimensions
+            import numpy as np
+            padded_features = np.zeros((feature_matrix.shape[0], target_dims))
+            padded_features[:, :current_dims] = feature_matrix
+            return padded_features
+        
+    def track_feature_columns(self, X, feature_names=None):
+        """
+        Record the expected feature column names from training.
+        
+        Args:
+            X (ndarray): Feature matrix
+            feature_names (list, optional): Names for each feature column
+        """
+        if feature_names is not None and len(feature_names) == X.shape[1]:
+            self.expected_columns = feature_names
+        else:
+            # Generate position-based names if not provided
+            self.expected_columns = [f"f{i}" for i in range(X.shape[1])]
+        
+        logger.info(f"Tracked {len(self.expected_columns)} expected feature columns")
+        return self.expected_columns
+
+    def get_expected_feature_names(self):
+        """
+        Get the expected feature column names for XGBoost.
+        
+        Returns:
+            list: Feature column names in expected order
+        """
+        if not self.expected_columns:
+            logger.warning("No expected columns tracked! Using default empty list.")
+        return self.expected_columns
+        
+        
+        
+    
+    
+    def track_menu_feature_keys(self, menu_features):
+        """
+        Track all possible menu feature keys to ensure consistency.
+        
+        Args:
+            menu_features (dict): Current menu features
+        """
+        if not hasattr(self, 'menu_feature_keys'):
+            self.menu_feature_keys = set()
+        
+        if menu_features:
+            # Add all keys from this menu features dict to our master set
+            self.menu_feature_keys.update(menu_features.keys())
+            
+            # Log the current count for debugging
+            if len(self.menu_feature_keys) % 10 == 0:  # Only log occasionally to reduce spam
+                logger.debug(f"Now tracking {len(self.menu_feature_keys)} unique menu feature keys")
+        
+        
+    
+    
+    
+    
+    
         
     def extract_menu_features(self, data, menu_context, food_rules=None):
         """
@@ -264,7 +610,10 @@ class FeatureEngineer:
             dict: Extracted menu features
         """
         features = {}
-        
+        ENABLE_SECOND_ORDER_DEPS = False  # Disable second-order dependencies
+        MAX_DEPENDENCY_PAIRS = 15  # Limit pairwise dependency features
+        ENABLE_INTERACTION_FEATURES = False  # Disable sparse interaction features
+        ENABLE_QTY_TRANSFORM = False  
         # Extract required variables from menu_context
         meal_type = menu_context.get('meal_type', '')
         event_time = menu_context.get('event_time', '')
@@ -369,7 +718,7 @@ class FeatureEngineer:
                 features[f"{cat}__present_dep_importance"] = present_imp_sum
                 
                 # Second-order dependencies for key categories
-                if cat in ['Biryani', 'Rice', 'Curries', 'Flavored_Rice', 'Dal']:
+                if cat in ['Biryani', 'Rice', 'Curries', 'Flavored_Rice', 'Dal'] and ENABLE_SECOND_ORDER_DEPS:
                     second_order_deps = set()
                     second_order_importance = 0.0
                     
@@ -407,58 +756,58 @@ class FeatureEngineer:
             context_sensitive_categories = [
                 'Welcome_Drinks', 'Breakfast', 'Papad', 'Pickle', 'Ghee', 'Sides', 'Sides_pcs'
             ]
-        
-            for cat in context_sensitive_categories:
-                if cat in menu_context['categories']:
-                    # 1. Create context-interaction features
-                    for meal in ['Breakfast', 'Lunch', 'Hi-Tea', 'Dinner']:
-                        is_meal = 1.0 if meal_type == meal else 0.0
-                        features[f"{cat}_{meal}_interaction"] = is_meal
+            if ENABLE_INTERACTION_FEATURES :
+                for cat in context_sensitive_categories: 
+                    if cat in menu_context['categories']:
+                        # 1. Create context-interaction features
+                        for meal in ['Breakfast', 'Lunch', 'Hi-Tea', 'Dinner']:
+                            is_meal = 1.0 if meal_type == meal else 0.0
+                            features[f"{cat}_{meal}_interaction"] = is_meal
+                            
+                            # Higher-order meal-veg interaction
+                            if is_meal > 0 and 'veg_ratio' in features:
+                                features[f"{cat}_{meal}_veg_interaction"] = is_meal * features['veg_ratio']
                         
-                        # Higher-order meal-veg interaction
-                        if is_meal > 0 and 'veg_ratio' in features:
-                            features[f"{cat}_{meal}_veg_interaction"] = is_meal * features['veg_ratio']
-                    
-                    # 2. Time-specific interactions
-                    for time in ['Morning', 'Afternoon', 'Evening', 'Night']:
-                        is_time = 1.0 if event_time == time else 0.0
-                        features[f"{cat}_{time}_interaction"] = is_time
-                    
-                    # 3. Per-guest scaling features
-                    cat_items = menu_context['items_by_category'].get(cat, [])
-                    if cat_items and 'total_guests' in features:
-                        features[f"{cat}_items_per_guest"] = len(cat_items) / max(features['total_guests'], 1)
+                        # 2. Time-specific interactions
+                        for time in ['Morning', 'Afternoon', 'Evening', 'Night']:
+                            is_time = 1.0 if event_time == time else 0.0
+                            features[f"{cat}_{time}_interaction"] = is_time
+                        
+                        # 3. Per-guest scaling features
+                        cat_items = menu_context['items_by_category'].get(cat, [])
+                        if cat_items and 'total_guests' in features:
+                            features[f"{cat}_items_per_guest"] = len(cat_items) / max(features['total_guests'], 1)
             
             # Process small-quantity categories
             small_quantity_categories = ['Pickle', 'Papad', 'Ghee', 'Sides', 'Sides_pcs']
-            
-            for cat in small_quantity_categories:
-                if cat in menu_context['categories']:
-                    # Extract base quantities from this category
-                    cat_items = menu_context['items_by_category'].get(cat, [])
-                    if not cat_items:
-                        continue
+            if ENABLE_QTY_TRANSFORM:
+                for cat in small_quantity_categories :
+                    if cat in menu_context['categories']:
+                        # Extract base quantities from this category
+                        cat_items = menu_context['items_by_category'].get(cat, [])
+                        if not cat_items:
+                            continue
+                            
+                        # Calculate total category quantity
+                        total_qty = 0.0
+                        for item in cat_items:
+                            if item in menu_context['item_properties']:
+                                props = menu_context['item_properties'][item]
+                                # Extract quantity from rules
+                                if 'quantity_rule' in props:
+                                    qty_rule = props['quantity_rule']
+                                    qty_str = qty_rule.get('default_quantity', '10g')
+                                    qty = extract_quantity_value(qty_str)
+                                    total_qty += qty
                         
-                    # Calculate total category quantity
-                    total_qty = 0.0
-                    for item in cat_items:
-                        if item in menu_context['item_properties']:
-                            props = menu_context['item_properties'][item]
-                            # Extract quantity from rules
-                            if 'quantity_rule' in props:
-                                qty_rule = props['quantity_rule']
-                                qty_str = qty_rule.get('default_quantity', '10g')
-                                qty = extract_quantity_value(qty_str)
-                                total_qty += qty
-                    
-                    # Create transformed quantity features for non-linear scaling
-                    if total_qty > 0:
-                        # Logarithmic transformation reduces proportional error
-                        features[f"{cat}_log_qty"] = np.log1p(total_qty)  # log(1+x) for stability
-                        # Square root transformation for intermediate scaling
-                        features[f"{cat}_sqrt_qty"] = np.sqrt(total_qty)
-                        # Store actual qty for reference
-                        features[f"{cat}_raw_qty"] = total_qty
+                        # Create transformed quantity features for non-linear scaling
+                        if total_qty > 0:
+                            # Logarithmic transformation reduces proportional error
+                            features[f"{cat}_log_qty"] = np.log1p(total_qty)  # log(1+x) for stability
+                            # Square root transformation for intermediate scaling
+                            features[f"{cat}_sqrt_qty"] = np.sqrt(total_qty)
+                            # Store actual qty for reference
+                            features[f"{cat}_raw_qty"] = total_qty
                 
             # Process dependency pairs
             dependency_importance_map = {}
@@ -467,6 +816,7 @@ class FeatureEngineer:
                     dependency_importance_map[f"{primary}_{dependent}"] = importance
                     
             processed_pairs = set()
+            pair_count = 0
             for primary, deps in food_rules.category_dependencies.items():
                 for dependent in deps:
                     pair_key = f"{primary}_{dependent}"
@@ -474,6 +824,9 @@ class FeatureEngineer:
                         continue
                         
                     processed_pairs.add(pair_key)
+                    pair_count+=1
+                    if pair_count > MAX_DEPENDENCY_PAIRS:
+                        break
                     
                     # Only process if both categories exist
                     if primary in menu_context['items_by_category'] and dependent in menu_context['items_by_category']:
@@ -535,7 +888,7 @@ class FeatureEngineer:
         
         # Meal balance metrics
         features['meal_component_balance'] = len(menu_context.get('categories', [])) / 12.0  # Normalize by typical meal
-        
+        self.track_menu_feature_keys(features)
         return features
         
     def print_feature_engineering_dataset(self, data, sample_count=10):
