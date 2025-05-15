@@ -9,8 +9,11 @@ from sklearn.pipeline import Pipeline
 from food_predictor.core.menu_analyzer import MenuAnalyzer
 from sklearn.compose import ColumnTransformer, make_column_selector
 from sklearn.pipeline import Pipeline
+from sklearn.exceptions import NotFittedError
+from sklearn.utils.validation import check_is_fitted
 from food_predictor.core.category_rules import FoodCategoryRules
 from food_predictor.data.item_service import ItemService
+
 from food_predictor.utils.quantity_utils import extract_quantity_value,extract_unit,validate_unit,infer_default_unit
 
 
@@ -82,7 +85,12 @@ class FeatureSpaceManager(BaseEstimator, TransformerMixin):
             dict_list = [X]
         else:
             dict_list = X
-            
+        try:
+            check_is_fitted(self, ['feature_names_in_', 'n_features_in_'])
+        except NotFittedError:
+            # Log warning and perform emergency fit as defensive measure
+            logger.warning("FeatureSpaceManager was not fitted before transform. Performing emergency fit.")
+            self.fit(dict_list)
         # Initialize output matrix with zeros
         result = np.zeros((len(dict_list), self.n_features_in_))
         
@@ -108,6 +116,7 @@ class FeatureSpaceManager(BaseEstimator, TransformerMixin):
         feature_names_out : ndarray
             Output feature names
         """
+        check_is_fitted(self,['feature_names_in_'])
         return np.array(self.feature_names_in_)
 
 

@@ -23,6 +23,23 @@ from food_predictor.data.item_matcher import FoodItemMatcher
 from food_predictor.data.item_service import ItemService
 from food_predictor.core.category_rules import FoodCategoryRules
 from food_predictor.utils.quantity_utils import extract_quantity_value,extract_unit,validate_unit,infer_default_unit
+def safe_int(val, default=50, context=None):
+    import math
+    import pandas as pd
+    try:
+        if val is None or (isinstance(val, float) and (math.isnan(val) or pd.isna(val))):
+            if context:
+                print(f"Warning: {context} is missing or NaN. Defaulting to {default}.")
+            return int(default)
+        if isinstance(val, str) and (val.strip() == "" or val.lower() == "nan"):
+            if context:
+                print(f"Warning: {context} is empty string or 'nan'. Defaulting to {default}.")
+            return int(default)
+        return int(val)
+    except Exception:
+        if context:
+            print(f"Warning: {context} could not be converted ({val}). Defaulting to {default}.")
+        return int(default)
 
 # Disable specific warnings that cloud important logs
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -1697,7 +1714,11 @@ class ModelManager:
             'meal_type_encoder': self.feature_engineer.meal_type_encoder,
             'event_type_encoder': self.feature_engineer.event_type_encoder
         }
-        
+         if hasattr(self.feature_engineer, 'feature_space_manager'):
+            fsm = self.feature_engineer.feature_space_manager
+            if hasattr(fsm, 'feature_names_in_') and fsm.feature_names_in_ is not None:
+                logger.info(f"Saving feature space manager state with {len(fsm.feature_names_in_)} features")
+                feature_engineering_state['feature_space_manager'] = fsm
         # Include any additional stateful components
         if hasattr(self.feature_engineer, 'guest_scaler') and self.feature_engineer.guest_scaler:
             feature_engineering_state['guest_scaler'] = self.feature_engineer.guest_scaler
@@ -1751,6 +1772,7 @@ class ModelManager:
         """
         import os
         import joblib
+        from sklearn.exceptions import NotFittedError
         
         # Resolve path handling
         if os.path.isdir(model_path):
@@ -1761,17 +1783,45 @@ class ModelManager:
             raise FileNotFoundError(f"Model file not found at: {model_path}")
         
         # Load pipeline state
+        logger.info(f"Loading model from {model_path}")
         master_model = joblib.load(model_path)
         
         # Restore feature engineering state
         feature_engineering_state = master_model.get('feature_engineering_state', {})
-        for component_name, component in feature_engineering_state.items():
-            setattr(self.feature_engineer, component_name, component)
+        
+        # First, ensure feature_engineer has basic attributes
         if not hasattr(self.feature_engineer, 'menu_feature_keys'):
             self.feature_engineer.menu_feature_keys = set()
         elif not isinstance(self.feature_engineer.menu_feature_keys, set):
             # Convert from list or other iterable to set if needed
             self.feature_engineer.menu_feature_keys = set(self.feature_engineer.menu_feature_keys)
+        
+        # Then restore each component
+        for component_name, component in feature_engineering_state.items():
+            setattr(self.feature_engineer, component_name, component)
+        
+        # Verify feature_space_manager was loaded and is initialized
+        if not hasattr(self.feature_engineer, 'feature_space_manager') or \
+        not hasattr(self.feature_engineer.feature_space_manager, 'feature_names_in_') or \
+        self.feature_engineer.feature_space_manager.feature_names_in_ is None:
+            
+            # Feature space manager is missing or corrupted - create new one
+            from food_predictor.core.feature_engineering import FeatureSpaceManager
+            logger.warning("Feature space manager not found or corrupted in loaded model. Initializing new one.")
+            
+            self.feature_engineer.feature_space_manager = FeatureSpaceManager()
+            
+            # Initialize with at least empty state
+            # This follows scikit-learn practice of ensuring transformers have minimal valid state
+            self.feature_engineer.feature_space_manager.fit([{}])
+            
+            logger.info(f"Initialized new feature space manager with minimal state")
+        else:
+            # Log successful restoration
+            fsm = self.feature_engineer.feature_space_manager
+            logger.info(f"Restored feature space manager with {fsm.n_features_in_} features")
+        
+        # Restore other model attributes
         if 'category_feature_keys' in master_model:
             self.category_feature_keys = master_model['category_feature_keys']
         if 'item_feature_keys' in master_model:
@@ -1782,11 +1832,10 @@ class ModelManager:
             self.category_feature_registry = master_model['category_feature_registry']
         if 'item_feature_registry' in master_model:
             self.item_feature_registry = master_model['item_feature_registry']
-        if 'model_feature_names' in master_model:  # Add this
+        if 'model_feature_names' in master_model:
             self.model_feature_names = master_model['model_feature_names']
         else:
-            self.model_feature_names = {}  # Initialize empty if not found
-    
+            self.model_feature_names = {}
         
         # Restore model components
         self.category_models = master_model['category_models']
@@ -1795,8 +1844,8 @@ class ModelManager:
         self.item_scalers = master_model['item_scalers']
         self.calibration_config = master_model['calibration_config']
         
-        print(f"Loaded model with {len(self.category_models)} category models and "
-            f"{len(self.item_models)} item models")
+        logger.info(f"Loaded model with {len(self.category_models)} category models and "
+                f"{len(self.item_models)} item models")
         
         return self
     
@@ -2239,22 +2288,18 @@ class ModelManager:
                 evt_time = order_data['Event_Time'].iat[0]
                 meal_t = order_data['Meal_Time'].iat[0]
                 evt_type = order_data['Event_Type'].iat[0]
-                guests = order_data['total_guest_count'].iat[0]
-                if 'Veg_Count' in order_data.columns and not pd.isna(order_data['Veg_Count'].iat[0]):
-                    vegs = order_data['Veg_Count'].iat[0]
-                    # Statistical tracking for evaluation distribution
-                    if not hasattr(self, '_eval_stats'):
-                        self._eval_stats = {'veg_provided': 0, 'veg_omitted': 0}
-                    self._eval_stats['veg_provided'] += 1
+                # WITH THIS ROBUST VERSION:
+                if 'total_guest_count' in order_data.columns:
+                    guests = safe_int(order_data['total_guest_count'].iat[0])
+                elif 'Guest_Count' in order_data.columns:
+                    guests = safe_int(order_data['Guest_Count'].iat[0])
                 else:
-                    # Pass None to trigger default handling in predict()
-                    vegs = None
-                    # Statistical tracking for evaluation distribution
-                    if not hasattr(self, '_eval_stats'):
-                        self._eval_stats = {'veg_provided': 0, 'veg_omitted': 0}
-                    self._eval_stats['veg_omitted'] += 1
+                    guests = 50  # fallback default
 
-                
+                if 'Veg_Count' in order_data.columns:
+                    vegs = safe_int(order_data['Veg_Count'].iat[0], default=int(0.4 * guests))
+                else:
+                    vegs = int(0.4 * guests)
                 # Get unique items in this order
                 items = order_data['Item_name'].unique().tolist()
                 
