@@ -1612,11 +1612,12 @@ class ModelManager:
                 is_veg = item_properties.get('is_veg', 'veg')
                 
                 # Select best available prediction source
-                selected_quantity = item_model_pred if item_model_pred is not None else category_model_pred
+                # selected_quantity = item_model_pred if item_model_pred is not None else category_model_pred
 
-                if selected_quantity is None:
-                    logger.warning(f"   No prediction found for {item}, using default quantity")
-                    selected_quantity = category_rules_pred 
+                # if selected_quantity is None:
+                #     logger.warning(f"   No prediction found for {item}, using default quantity")
+                #     selected_quantity = category_rules_pred 
+                selected_quantity = category_rules_pred
                 
                 # Calculate total quantity based on guest count
                 total_quantity = selected_quantity * total_guest_count
@@ -1628,7 +1629,7 @@ class ModelManager:
                     # Specific veg categories recalculation
                     if (category in veg_specific_categories) and (is_veg == 'veg'):
                         logger.debug(f"Applying veg-specific logic for {item}, category={category}, is_veg={is_veg}")
-                        selected_quantity = item_model_pred or category_model_pred 
+                        selected_quantity = category_rules_pred 
                         logger.debug(f"Changing from {selected_quantity} to {item_model_pred or category_model_pred }")
                         total_quantity = selected_quantity * veg_guest_count
                 
@@ -1670,8 +1671,9 @@ class ModelManager:
                     'category': category, 
                     'is_veg': is_veg, 
                     'prediction_details': prediction_details,
-                    'selected_prediction_source': 'item_model' if item_model_pred is not None else 
-                                                ('category_model' if category_model_pred is not None else 'rules_based')
+                    #'selected_prediction_source': 'item_model' if item_model_pred is not None else 
+                    #                            ('category_model' if category_model_pred is not None else 'rules_based')
+                    'selected_prediction_source':'rules_based'
                 }
                         
             # 9) Apply meal type modifiers for final adjustments
@@ -1714,7 +1716,7 @@ class ModelManager:
             'meal_type_encoder': self.feature_engineer.meal_type_encoder,
             'event_type_encoder': self.feature_engineer.event_type_encoder
         }
-         if hasattr(self.feature_engineer, 'feature_space_manager'):
+        if hasattr(self.feature_engineer, 'feature_space_manager'):
             fsm = self.feature_engineer.feature_space_manager
             if hasattr(fsm, 'feature_names_in_') and fsm.feature_names_in_ is not None:
                 logger.info(f"Saving feature space manager state with {len(fsm.feature_names_in_)} features")
