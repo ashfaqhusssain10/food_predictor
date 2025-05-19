@@ -168,14 +168,6 @@ class RequestProcessor:
     def format_response(self, prediction_results: Dict[str, Any], is_error: bool = False, error_message: str = "") -> Dict[str, Any]:
         """
         Format the API response.
-        
-        Args:
-            prediction_results: Prediction results from the model
-            is_error: Whether there was an error
-            error_message: Error message if applicable
-            
-        Returns:
-            Formatted API response
         """
         if is_error:
             return {
@@ -193,17 +185,30 @@ class RequestProcessor:
         # Format the prediction results for API response
         formatted_results = {}
         for item, pred in prediction_results.items():
-            formatted_results[item] = {
-                'total': pred['total'],
-                'per_person': pred['per_person'],
-                'unit': pred['unit'],
-                'category': pred['category'],
-                'is_veg': pred['is_veg']
-            }
-            
-            # Add price information if available
-            if 'price' in pred:
-                formatted_results[item]['price'] = pred['price']
+            # Skip metadata fields
+            if item in ['total_guest_count', 'veg_guest_count', 'event_type', 'meal_type', 'event_time']:
+                continue
+                
+            # Add defensive check for pred type
+            if not isinstance(pred, dict):
+                logger.warning(f"Prediction for '{item}' is not a dictionary: {pred}")
+                continue
+                
+            try:
+                formatted_results[item] = {
+                    'total': pred.get('total', '0g'),
+                    'per_person': pred.get('per_person', '0g'),
+                    'unit': pred.get('unit', 'g'),
+                    'category': pred.get('category', 'Unknown'),
+                    'is_veg': pred.get('is_veg', 'veg')
+                }
+                
+                # Add price information if available
+                if 'price' in pred:
+                    formatted_results[item]['price'] = pred['price']
+            except Exception as e:
+                logger.error(f"Error formatting prediction for '{item}': {str(e)}")
+                continue
                 
         return {
             'statusCode': 200,

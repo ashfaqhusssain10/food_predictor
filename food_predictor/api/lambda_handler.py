@@ -9,6 +9,11 @@ import logging
 import time
 import pandas as pd
 from typing import Dict, Any
+import requests
+import pandas as pd
+import numpy as np
+import xgboost
+import sklearn
 
 from food_predictor.api.request_processor import RequestProcessor
 from food_predictor.core.model_manager import ModelManager
@@ -89,6 +94,22 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
     logger.info(f"Received event: {json.dumps(event)}")
     start_time = time.time()
+    try:
+        # Fix for double-encoded JSON in body
+        if 'body' in event and isinstance(event['body'], str):
+            try:
+                # Parse the body string as JSON
+                parsed_body = json.loads(event['body'])
+                # Replace the string with the parsed object
+                event['body'] = parsed_body
+                logger.info(f"Successfully parsed body JSON: {json.dumps(parsed_body, default=str)}")
+            except json.JSONDecodeError:
+                logger.warning(f"Failed to parse body as JSON: {event['body'][:100]}...")
+    except Exception as e:
+        logger.error(f"Error in pre-processing: {str(e)}")
+    
+    
+    
     
     # Process request
     request_data, is_valid, error_message = request_processor.process_request(event)
