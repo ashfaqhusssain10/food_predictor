@@ -22,6 +22,7 @@ from food_predictor.core.menu_analyzer import MenuAnalyzer
 from food_predictor.data.item_matcher import FoodItemMatcher
 from food_predictor.data.item_service import ItemService
 from food_predictor.core.category_rules import FoodCategoryRules
+from food_predictor.data.menu_items import MENU_ITEMS
 from food_predictor.utils.quantity_utils import extract_quantity_value,extract_unit,validate_unit,infer_default_unit
 def safe_int(val, default=50, context=None):
     import math
@@ -1685,6 +1686,14 @@ class ModelManager:
                 category_quantities[category]["value"] = modified_qty
                 
             logger.debug(f" predict() final output = {predictions}")
+            
+            for item, prediction_data in predictions.items():
+                if item in MENU_ITEMS:
+                    # Add the menu metadata to predictions
+                    prediction_data['menu_category'] = MENU_ITEMS[item]['Level1']
+                    prediction_data['cuisine'] = MENU_ITEMS[item]['cuisine'] 
+                    prediction_data['type_code'] = MENU_ITEMS[item]['type_code']
+            
             return predictions
         finally:
             self.menu_analyzer._evaluation_mode = was_eval_mode
