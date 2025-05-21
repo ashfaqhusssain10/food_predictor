@@ -264,7 +264,7 @@ class FoodCategoryRules:
             "Curd": {
                 "min_quantity": "50g",
                 "max_quantity": "60g",
-                "default_quantity": "50g",
+                "default_quantity": "50g",        
                 "vc_price": 50,
             },
             "Fruits": {

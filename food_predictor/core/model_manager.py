@@ -23,6 +23,7 @@ from food_predictor.data.item_matcher import FoodItemMatcher
 from food_predictor.data.item_service import ItemService
 from food_predictor.core.category_rules import FoodCategoryRules
 from food_predictor.data.menu_items import MENU_ITEMS
+from food_predictor.data.pcs_conversion import pcs_conversion
 from food_predictor.utils.quantity_utils import extract_quantity_value,extract_unit,validate_unit,infer_default_unit
 def safe_int(val, default=50, context=None):
     import math
@@ -1633,6 +1634,20 @@ class ModelManager:
                         selected_quantity = category_rules_pred 
                         logger.debug(f"Changing from {selected_quantity} to {item_model_pred or category_model_pred }")
                         total_quantity = selected_quantity * veg_guest_count
+                if item in pcs_conversion:
+                    #max_range = pcs_conversion[item][1] #max of the range
+                    range_values = pcs_conversion[item]
+                    predicticted_value = selected_quantity 
+                    
+                    nearest_value = min(range_values, key=lambda x : abs(predicticted_value - x))
+                    
+                    if nearest_value > 0:
+                        pieces = predicticted_value/nearest_value
+                    else :
+                        pieces = 1.0
+                else :
+                    pieces = 1.0
+                pieces = round(pieces,2)
                 
                 # Store category quantities
                 if category not in category_quantities:
@@ -1663,12 +1678,15 @@ class ModelManager:
                     },
                     'calibration_used': calibration
                 }
-        
+                original_unit = item_predictions[item]['unit']
+                use_pieces = item in pcs_conversion
+                
+                display_unit = "pcs" if use_pieces else original_unit
                 # Store final prediction
                 predictions[item] = { 
                     'total': f"{total_quantity:.1f}{item_predictions[item]['unit']}", 
                     'per_person': f"{selected_quantity:.2f}{item_predictions[item]['unit']}", 
-                    'unit': item_predictions[item]['unit'], 
+                    'unit': display_unit, 
                     'category': category, 
                     'is_veg': is_veg, 
                     'prediction_details': prediction_details,

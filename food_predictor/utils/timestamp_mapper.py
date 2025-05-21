@@ -1,63 +1,79 @@
 """
-Utility functions for mapping timestamps to event times and meal types.
+Maps time slot strings to model inputs (event_time and meal_type).
 """
 
-import datetime
-from typing import Dict, Tuple, Any, Optional
+import logging
 
-def map_timestamp_to_model_inputs(timestamp: Any) -> Tuple[str, str]:
+logger = logging.getLogger()
+
+def map_timestamp_to_model_inputs(time_slot):
     """
-    Map a timestamp to appropriate event_time and meal_type values.
+    Maps a time slot string to event_time and meal_type.
     
     Args:
-        timestamp: Timestamp as string (ISO format) or datetime object
+        time_slot: String representation of time slot (e.g. "7:30 AM-8:30 AM")
         
     Returns:
         Tuple of (event_time, meal_type)
     """
-    # Handle different timestamp formats
-    if isinstance(timestamp, str):
-        try:
-            # Try to parse ISO format
-            dt = datetime.datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
-        except ValueError:
-            try:
-                # Try common formats
-                dt = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            except ValueError:
-                # Fallback
-                raise ValueError(f"Unsupported timestamp format: {timestamp}")
-    elif isinstance(timestamp, (int, float)):
-        # Unix timestamp
-        dt = datetime.datetime.fromtimestamp(timestamp)
-    elif isinstance(timestamp, datetime.datetime):
-        dt = timestamp
-    else:
-        raise ValueError(f"Unsupported timestamp type: {type(timestamp)}")
+    # Clean up the input if needed
+    if isinstance(time_slot, (int, float)):
+        # If somehow a timestamp is passed, convert to string
+        time_slot = str(time_slot)
     
-    # Get the hour (0-23)
-    hour = dt.hour
+    time_slot = time_slot.strip().upper()
     
-    # Map hour to event_time
-    if 5 <= hour < 12:
+    # Breakfast slots (Morning)
+    breakfast_slots = [
+        "7:30 AM-8:30 AM", 
+        "8:30 AM-9:30 AM", 
+        "9:30 AM-10:30 AM"
+    ]
+    
+    # Lunch slots (Afternoon)
+    lunch_slots = [
+        "12:30 PM-1:30 PM", 
+        "1:30 PM-2:30 PM", 
+        "2:30 PM-3:30 PM"
+    ]
+    
+    # Snacks/Hi-tea slots (Evening)
+    snacks_slots = [
+        "3:30 PM - 4:30 PM", 
+        "4:30 PM - 5:30 PM", 
+        "5:30 PM - 6:30 PM"
+    ]
+    
+    # Dinner slots (Night)
+    dinner_slots = [
+        "6:30 PM - 7:30 PM", 
+        "7:30 PM - 8:30 PM", 
+        "8:30 PM - 9:30 PM"
+    ]
+    
+    # Normalize input by removing spaces around hyphens
+    normalized_slot = time_slot.replace(" - ", "-").replace(" -", "-").replace("- ", "-")
+    
+    logger.info(f"Mapping time slot: {time_slot} (normalized: {normalized_slot})")
+    
+    # Map to event_time and meal_type
+    if any(slot.upper() in normalized_slot for slot in breakfast_slots):
         event_time = "Morning"
-    elif 12 <= hour < 17:
-        event_time = "Afternoon"
-    elif 17 <= hour < 21:
-        event_time = "Evening"
-    else:  # 21-23, 0-4
-        event_time = "Night"
-    
-    # Map hour to meal_type
-    if 5 <= hour < 11:
         meal_type = "Breakfast"
-    elif 11 <= hour < 16:
+    elif any(slot.upper() in normalized_slot for slot in lunch_slots):
+        event_time = "Afternoon" 
         meal_type = "Lunch"
-    elif 16 <= hour < 18:
-        meal_type = "Hi-tea"
-    elif 18 <= hour < 23:
+    elif any(slot.upper() in normalized_slot for slot in snacks_slots):
+        event_time = "Evening"
+        meal_type = "Hi-tea"  
+    elif any(slot.upper() in normalized_slot for slot in dinner_slots):
+        event_time = "Night"
         meal_type = "Dinner"
-    else:  # Late night hours (23-4)
-        meal_type = "Hi-tea"  # Default to snacks for late night
+    else:
+        # Default case if no match is found
+        logger.warning(f"Could not map time slot: {time_slot}, using defaults")
+        event_time = "Evening"
+        meal_type = "Dinner"
     
+    logger.info(f"Mapped to event_time: {event_time}, meal_type: {meal_type}")
     return event_time, meal_type

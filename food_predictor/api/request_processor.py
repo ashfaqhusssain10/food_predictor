@@ -18,7 +18,7 @@ class RequestProcessor:
     def __init__(self):
         """Initialize the request processor."""
         self.required_fields = {
-            'timestamp': (str, int, float),  # Accept string, int, or float for timestamp
+            'timeslot': str,  # Accept string, int, or float for timestamp
             'total_guest_count': int,
             'selected_items': list
         }
@@ -90,9 +90,9 @@ class RequestProcessor:
             processed_data['veg_guest_count'] = int(processed_data['total_guest_count'] * 0.4)
         
         # Map timestamp to event_time and meal_type if needed
-        if 'timestamp' in processed_data:
+        if 'time_slot' in processed_data:
             try:
-                event_time, meal_type = map_timestamp_to_model_inputs(processed_data['timestamp'])
+                event_time, meal_type = map_timestamp_to_model_inputs(processed_data['time_slot'])
                 
                 # Only override if not explicitly provided
                 if 'event_time' not in processed_data:
@@ -101,7 +101,7 @@ class RequestProcessor:
                 if 'meal_type' not in processed_data:
                     processed_data['meal_type'] = meal_type
             except ValueError as e:
-                return {}, False, f"Invalid timestamp format: {str(e)}"
+                return {}, False, f"Invalid time_slot format: {str(e)}"
                 
         # Add default event_type if not provided
         if 'event_type' not in processed_data:
@@ -199,11 +199,13 @@ class RequestProcessor:
                     'total': pred.get('total', '0g'),
                     'per_person': pred.get('per_person', '0g'),
                     'unit': pred.get('unit', 'g'),
-                    'category': pred.get('category', 'Unknown'),
+                    #'category': pred.get('category', 'Unknown'),
                     'is_veg': pred.get('is_veg', 'veg')
                 }
-                
-                # Add price information if available
+                for field in ['menu_category', 'cuisine', 'type_code']:
+                    if field in pred:
+                        formatted_results[item][field] = pred[field]
+                                # Add price information if available
                 if 'price' in pred:
                     formatted_results[item]['price'] = pred['price']
             except Exception as e:
