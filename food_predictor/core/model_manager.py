@@ -1682,10 +1682,21 @@ class ModelManager:
                 use_pieces = item in pcs_conversion
                 
                 display_unit = "pcs" if use_pieces else original_unit
+                if use_pieces:
+                    # When using pieces, display the piece counts
+                    display_total = pieces * total_guest_count
+                    display_per_person = pieces
+                    formatted_total = f"{display_total:.1f}{display_unit}"
+                    formatted_per_person = f"{display_per_person:.2f}{display_unit}"
+                else:
+                    # For standard units, use the original quantities
+                    formatted_total = f"{total_quantity:.1f}{original_unit}"
+                    formatted_per_person = f"{selected_quantity:.2f}{original_unit}"
+
                 # Store final prediction
                 predictions[item] = { 
-                    'total': f"{total_quantity:.1f}{item_predictions[item]['unit']}", 
-                    'per_person': f"{selected_quantity:.2f}{item_predictions[item]['unit']}", 
+                    'total': formatted_total, 
+                    'per_person':  formatted_per_person,
                     'unit': display_unit, 
                     'category': category, 
                     'is_veg': is_veg, 

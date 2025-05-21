@@ -18,7 +18,7 @@ class RequestProcessor:
     def __init__(self):
         """Initialize the request processor."""
         self.required_fields = {
-            'timeslot': str,  # Accept string, int, or float for timestamp
+            'time_slot': str,  # Accept string, int, or float for timestamp
             'total_guest_count': int,
             'selected_items': list
         }
