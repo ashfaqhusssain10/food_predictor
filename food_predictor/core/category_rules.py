@@ -36,9 +36,6 @@ class FoodCategoryRules:
                 "max_quantity": "120ml",
                 "default_quantity": "120ml",
                 "vc_price": 180,
-                "max_quantity": "70g",
-                "default_quantity": "50g",
-                "vc_price": 150,
             },
             "Paan": {
                 "min_quantity": "1pcs",
@@ -456,23 +453,29 @@ class FoodCategoryRules:
         category = item_properties['category']
         quantity_rule = item_properties.get('quantity_rule')
         # Ensure quantity_rule is not None - ADD THIS CHECK
-        if quantity_rule is None:
-            normalized_category = self.normalize_category_name(category)
+        if not quantity_rule \
+           or quantity_rule.get("default_quantity") in (None, "", "100g"):
+            quantity_rule = None
         
-        # Look up the rule from category_rules
+        
+        normalized_category = self.normalize_category_name(category)
+        
+        
+        
+        if quantity_rule is None or 'default_quantity' not in quantity_rule:
+    # Lookup category rule
             if normalized_category in self.category_rules:
                 quantity_rule = self.category_rules[normalized_category]
-                # Log that we're using a fallback
-                logger.debug(f"Using fallback category rule for {item_name} (category: {category})")
+                logger.debug(f"Using category rule for {item_name} (category: {category})")
             else:
-                # If no rule exists for this category, use a safe default
+                # Fallback to safe default
                 quantity_rule = {
                     "default_quantity": "100g",
                     "min_quantity": "50g",
                     "max_quantity": "150g",
                     "vc_price": 100,
                 }
-                logger.warning(f"No category rule found for {category}, using generic defaults for {item_name}")
+                logger.warning(f"No category rule found for {normalized_category}, using generic defaults for {item_name}")
         
         
         # Determine base quantity from category rules

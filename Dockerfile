@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r lambda_requirements.txt
 
 # Copy function code and model files
 COPY food_predictor/ ${LAMBDA_TASK_ROOT}/food_predictor/
-COPY models/ ${LAMBDA_TASK_ROOT}/models 
+COPY models ${LAMBDA_TASK_ROOT}/models 
 
 # Copy any data files needed (uncomment if needed)
 # COPY DB38.xlsx ${LAMBDA_TASK_ROOT}/

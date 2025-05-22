@@ -1569,6 +1569,7 @@ class ModelManager:
                     item, item_properties, menu_context, main_items_info
                 )
                 category_rules_pred = category_rules_result['quantity']
+                canonical_unit = category_rules_result['unit']
                 
                 # Apply calibration weights to blend predictions
                 if category_model_pred is not None:
@@ -1679,19 +1680,30 @@ class ModelManager:
                     'calibration_used': calibration
                 }
                 original_unit = item_predictions[item]['unit']
-                use_pieces = item in pcs_conversion
+                native_piece_unit = original_unit == "pcs" or canonical_unit == "pcs"
+                conversion_piece_unit = item in pcs_conversion  # Detect conversion-eligible items
+
+                # Unified condition for piece-based representation
+                use_pieces = native_piece_unit or conversion_piece_unit
                 
                 display_unit = "pcs" if use_pieces else original_unit
-                if use_pieces:
-                    # When using pieces, display the piece counts
+                if conversion_piece_unit:
+                    # Weight-to-piece mathematical transformation
                     display_total = pieces * total_guest_count
                     display_per_person = pieces
                     formatted_total = f"{display_total:.1f}{display_unit}"
                     formatted_per_person = f"{display_per_person:.2f}{display_unit}"
+                elif native_piece_unit:
+                    # Direct piece count propagation (no transformation)
+                    formatted_total = f"{total_quantity:.1f}pcs"
+                    formatted_per_person = f"{selected_quantity:.2f}pcs"
+                    display_unit = "pcs"
                 else:
-                    # For standard units, use the original quantities
+                    # Standard weight-based representation
                     formatted_total = f"{total_quantity:.1f}{original_unit}"
                     formatted_per_person = f"{selected_quantity:.2f}{original_unit}"
+                if native_piece_unit and not display_unit == "pcs":
+                    display_unit = "pcs"                   
 
                 # Store final prediction
                 predictions[item] = { 
@@ -1789,7 +1801,9 @@ class ModelManager:
             'model_feature_names': self.model_feature_names,  #
             'category_feature_registry': self.category_feature_registry,
             'item_feature_registry': self.item_feature_registry,
-            'calibration_config': self.calibration_config
+            'calibration_config': self.calibration_config,
+            'item_metadata': self.item_service.item_metadata
+
         }
         # Now add additional attributes AFTER creating master_model
         if hasattr(self, 'category_feature_keys'):
@@ -1876,6 +1890,15 @@ class ModelManager:
             self.model_feature_names = master_model['model_feature_names']
         else:
             self.model_feature_names = {}
+        
+        if 'item_metadata' in master_model:
+            logger.info(f"Restoring item metadata with {len(master_model['item_metadata'])} entries")
+            self.item_service.item_metadata = master_model['item_metadata']
+            # Rebuild the two-tier hash table matcher with restored metadata
+            self.item_service.initialize_matcher()
+        else:
+            logger.warning("No item metadata found in model file. Item-specific rules may not be applied.")
+    
         
         # Restore model components
         self.category_models = master_model['category_models']
