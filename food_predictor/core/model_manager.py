@@ -1627,14 +1627,21 @@ class ModelManager:
                 
                 # Apply veg/non-veg guest ratio adjustments
                 if veg_guest_count != 0:
-                    total_quantity = selected_quantity * non_veg_guest_count
-
+                    #total_quantity = selected_quantity * non_veg_guest_count
+                    Non_veg_quantity = selected_quantity * non_veg_guest_count
+                    veg_quantity = 0
                     # Specific veg categories recalculation
                     if (category in veg_specific_categories) and (is_veg == 'veg'):
                         logger.debug(f"Applying veg-specific logic for {item}, category={category}, is_veg={is_veg}")
                         selected_quantity = category_rules_pred 
                         logger.debug(f"Changing from {selected_quantity} to {item_model_pred or category_model_pred }")
-                        total_quantity = selected_quantity * veg_guest_count
+                        #total_quantity = selected_quantity * veg_guest_count
+                        veg_quantity = selected_quantity * veg_guest_count
+                    total_quantity = Non_veg_quantity + veg_quantity
+                else:
+                    total_quantity = selected_quantity * total_guest_count
+                    Non_veg_quantity = total_quantity 
+                    veg_quantity = 0
                 if item in pcs_conversion:
                     #max_range = pcs_conversion[item][1] #max of the range
                     range_values = pcs_conversion[item]
@@ -1691,17 +1698,27 @@ class ModelManager:
                     # Weight-to-piece mathematical transformation
                     display_total = pieces * total_guest_count
                     display_per_person = pieces
+                    display_veg = pieces * veg_guest_count if veg_guest_count > 0 else 0
+                    display_non_veg = pieces * non_veg_guest_count    
+                    
                     formatted_total = f"{display_total:.1f}{display_unit}"
                     formatted_per_person = f"{display_per_person:.2f}{display_unit}"
+                    formatted_veg = f"{display_veg:.1f}{display_unit}"
+                    formatted_non_veg = f"{display_non_veg:.1f}{display_unit}"
                 elif native_piece_unit:
                     # Direct piece count propagation (no transformation)
                     formatted_total = f"{total_quantity:.1f}pcs"
                     formatted_per_person = f"{selected_quantity:.2f}pcs"
+                    formatted_veg = f"{veg_quantity:.1f}pcs"
+                    formatted_non_veg = f"{Non_veg_quantity:.1f}pcs"
                     display_unit = "pcs"
                 else:
                     # Standard weight-based representation
                     formatted_total = f"{total_quantity:.1f}{original_unit}"
-                    formatted_per_person = f"{selected_quantity:.2f}{original_unit}"
+                    formatted_per_person = f"{selected_quantity:.2f}{original_unit}"    
+                    formatted_veg = f"{veg_quantity:.1f}{original_unit}"
+                    formatted_non_veg = f"{Non_veg_quantity:.1f}{original_unit}"
+                    
                 if native_piece_unit and not display_unit == "pcs":
                     display_unit = "pcs"                   
 
@@ -1709,6 +1726,8 @@ class ModelManager:
                 predictions[item] = { 
                     'total': formatted_total, 
                     'per_person':  formatted_per_person,
+                    'veg': formatted_veg,
+                    'non_veg': formatted_non_veg,
                     'unit': display_unit, 
                     'category': category, 
                     'is_veg': is_veg, 
