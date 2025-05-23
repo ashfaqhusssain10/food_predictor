@@ -22,13 +22,13 @@ class FoodCategoryRules:
             "Biryani": {
                 "min_quantity": "250g",
                 "max_quantity": "550g",
-                "default_quantity": "300g",
+                "default_quantity": "320g",
                 "vc_price": 260,
                 "adjustments": {
                     "per_person": lambda total_guest_count: "250g" if total_guest_count > 100 else "300g",
-                    "multiple_varieties": lambda count: "250g" if count > 2 else "300g",
-                    "total_items": lambda total_items: "450g" if total_items <= 3 else (
-                        "320g" if total_items >= 3 else "300g")
+                    "variety_count": lambda count: "280g" if count > 2 else "300g",
+                    "total_items": lambda total_items: "550g" if total_items <= 3 else (
+                        "350g" if total_items >= 3 else "300g")
                 }
             },
             "Welcome_Drinks": {
@@ -122,7 +122,7 @@ class FoodCategoryRules:
                 "vc_price": 70,
                 "adjustments": {
                     "per_person": lambda total_guest_count: "100g" if total_guest_count > 100 else "100g",
-                    "multiple_varieties": lambda count: "80g" if count > 3 else "100g"
+                    "variety_count": lambda count: "80g" if count > 3 else "100g"
                 }
             },
             "fry": {

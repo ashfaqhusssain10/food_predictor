@@ -198,8 +198,11 @@ class RequestProcessor:
                 formatted_results[item] = {
                     'total': pred.get('total', '0g'),
                     'per_person': pred.get('per_person', '0g'),
+                    'veg': pred.get('veg', '0g'),  # Add this line
+                    'non_veg': pred.get('non_veg', '0g'),
+                    'veg_per_person': pred.get('veg_per_person', '0g'),
+                    'non_veg_per_person': pred.get('non_veg_per_person', '0g'),
                     'unit': pred.get('unit', 'g'),
-                    #'category': pred.get('category', 'Unknown'),
                     'is_veg': pred.get('is_veg', 'veg')
                 }
                 for field in ['menu_category', 'cuisine', 'type_code']:
