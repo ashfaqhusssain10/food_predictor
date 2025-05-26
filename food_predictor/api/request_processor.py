@@ -33,7 +33,39 @@ class RequestProcessor:
         # Valid values for categorical fields
         self.valid_event_times = ["Morning", "Afternoon", "Evening", "Night"]
         self.valid_meal_types = ["Breakfast", "Lunch", "Dinner", "Hi-tea"]
-        self.valid_event_types = ["Wedding", "Birthday", "Corporate", "Festival", "Family Gathering"]### or dalna either
+        self.valid_event_types = ["Wedding", 
+                                  "Reception", 
+                                  "Haldi", 
+                                  "Sangeet", 
+                                  "Mehendi", 
+                                  "Ring Ceremony", 
+                                  "Engagement", 
+                                  "Kids Birthday Party", 
+                                  "Cocktail Party", 
+                                  "Teen Birthdays", 
+                                  "Adult Birthdays", 
+                                  "House Parties", 
+                                  "Farm House Party", 
+                                  "Kitty Party", 
+                                  "Baby Shower", 
+                                  "Feeding Ceremony", 
+                                  "Janeu Ceremony", 
+                                  "Seminars", 
+                                  "Conferences", 
+                                  "Team Lunch", 
+                                  "Team Dinner", 
+                                  "Work shops", 
+                                  "Reunions", 
+                                  "Concerts", 
+                                  "Family Get-together", 
+                                  "Satyanarayan Puja", 
+                                  "Durga Puja", 
+                                  "House Warming", 
+                                  "Navrati", 
+                                  "Ganesh Chaturthi", 
+                                  "Half Saree Function", 
+                                  "Ear Piercing Function"]
+
     
     def process_request(self, event: Dict[str, Any]) -> Tuple[Dict[str, Any], bool, str]:
         """
@@ -209,8 +241,8 @@ class RequestProcessor:
                     if field in pred:
                         formatted_results[item][field] = pred[field]
                                 # Add price information if available
-                if 'price' in pred:
-                    formatted_results[item]['price'] = pred['price']
+                # if 'price' in pred:
+                #     formatted_results[item]['price'] = pred['price']
             except Exception as e:
                 logger.error(f"Error formatting prediction for '{item}': {str(e)}")
                 continue
