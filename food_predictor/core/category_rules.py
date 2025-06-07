@@ -143,13 +143,20 @@ class FoodCategoryRules:
                 "default_quantity": "40g",
                 "vc_price": 80,
             },
+            "Bakery": {
+                "min_quantity": "40g",
+                "max_quantity": "80g",
+                "default_quantity": "40g",
+                "vc_price": 80,
+            },
+            
             "Cakes": {
-                "min_quantity": "500g",
-                "max_quantity": "1000g",
-                "default_quantity": "500g",
+                "min_quantity": "100g",
+                "max_quantity": "200g",
+                "default_quantity": "120g",
                 "vc_price": 400,
                 "adjustments": {
-                    "per_person": lambda total_guest_count: "500g" if total_guest_count > 30 else "1000g"
+                    "per_person": lambda total_guest_count: "150g" if total_guest_count > 30 else "150g"
                 }
             },
             "Cup_Cakes": {

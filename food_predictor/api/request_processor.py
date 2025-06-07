@@ -5,6 +5,7 @@ Handles validation and processing of incoming requests.
 
 import json
 import logging
+import re
 from typing import Dict, Any, Tuple, List, Optional
 from food_predictor.utils.timestamp_mapper import map_timestamp_to_model_inputs
 # Configure logging
@@ -66,7 +67,58 @@ class RequestProcessor:
                                   "Half Saree Function", 
                                   "Ear Piercing Function"]
 
+    def _extract_numeric_value(self, quantity_str):
+        """Extract numeric value from quantity string like '1.5pcs' or '120g'"""
+        if not quantity_str:
+            return 0.0
+        match = re.search(r'(\d+\.?\d*)', str(quantity_str))
+        return float(match.group(1)) if match else 0.0
     
+    def _extract_unit(self, quantity_str):
+        """Extract unit from quantity string like '1.5pcs' or '120g'"""
+        if not quantity_str:
+            return 'g'
+        match = re.search(r'[a-zA-Z]+', str(quantity_str))
+        return match.group(0) if match else 'g'
+    
+    def _apply_piece_rounding_logic(self, pred):
+        """
+        Apply rounding logic for piece-based items (only for per-person fields).
+        
+        Args:
+            pred: Prediction dictionary with quantity values
+            
+        Returns:
+            Modified prediction dictionary with rounded per-person piece values
+        """
+        unit = pred.get('unit', 'g')
+        
+        # Only apply rounding logic for piece-based items
+        if unit != 'pcs':
+            return pred
+        
+        # Create a copy to avoid modifying the original
+        modified_pred = pred.copy()
+        
+        # Only apply rounding logic to per-person fields
+        per_person_fields = ['per_person', 'veg_per_person', 'non_veg_per_person']
+        
+        # Apply minimum 1 pc logic for per-person quantities only
+        for field in per_person_fields:
+            if field in modified_pred:
+                value = self._extract_numeric_value(modified_pred[field])
+                if 0 < value < 1.0:
+                    # If quantity is between 0 and 1, set to 1 pc minimum
+                    modified_pred[field] = "1.0pcs"
+                elif value >= 1.0:
+                    # Round if >= 1
+                    rounded_value = round(value)
+                    modified_pred[field] = f"{rounded_value}.0pcs"
+                else:
+                    # Keep as 0 if exactly 0
+                    modified_pred[field] = "0.0pcs"
+        
+        return modified_pred
     def process_request(self, event: Dict[str, Any]) -> Tuple[Dict[str, Any], bool, str]:
         """
         Process and validate the incoming request.
@@ -227,15 +279,16 @@ class RequestProcessor:
                 continue
                 
             try:
+                processed_pred =self._apply_piece_rounding_logic(pred)
                 formatted_results[item] = {
-                    'total': pred.get('total', '0g'),
-                    'per_person': pred.get('per_person', '0g'),
-                    'veg': pred.get('veg', '0g'),  # Add this line
-                    'non_veg': pred.get('non_veg', '0g'),
-                    'veg_per_person': pred.get('veg_per_person', '0g'),
-                    'non_veg_per_person': pred.get('non_veg_per_person', '0g'),
-                    'unit': pred.get('unit', 'g'),
-                    'is_veg': pred.get('is_veg', 'veg')
+                    #'total': processed_pred.get('total', '0g'),
+                    'per_person': processed_pred.get('per_person', '0g'),
+                    'veg': processed_pred.get('veg', '0g'),
+                    'non_veg': processed_pred.get('non_veg', '0g'),
+                    'veg_per_person': processed_pred.get('veg_per_person', '0g'),
+                    'non_veg_per_person': processed_pred.get('non_veg_per_person', '0g'),
+                    'unit': processed_pred.get('unit', 'g'),
+                    'is_veg': processed_pred.get('is_veg', 'veg')
                 }
                 for field in ['menu_category', 'cuisine', 'type_code']:
                     if field in pred:
