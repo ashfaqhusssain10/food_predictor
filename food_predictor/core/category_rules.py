@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Union, Tuple, Any
 import re
 import logging
 logger = logging.getLogger(__name__)
+from food_predictor.core.menu_analyzer import MenuAnalyzer
 # Import previously extracted utility functions
 from food_predictor.utils.quantity_utils import (
     extract_quantity_value,
@@ -10,27 +11,31 @@ from food_predictor.utils.quantity_utils import (
     infer_default_unit,
     validate_unit
 )
+
 class FoodCategoryRules:
     def __init__(self):
         logger.info("Initializing FoodCategoryRules")
+        self.menu_context = {}
         self.category_rules = self._initialize_category_rules()
         self.category_dependencies = self._initialize_category_dependencies()
         self.meal_type_modifiers = self._initialize_meal_type_modifiers()
 
     def _initialize_category_rules(self) -> Dict[str, Dict[str, Any]]:
-        return {
+        return{
             "Biryani": {
                 "min_quantity": "250g",
                 "max_quantity": "550g",
                 "default_quantity": "320g",
                 "vc_price": 260,
                 "adjustments": {
-                    "per_person": lambda total_guest_count: "250g" if total_guest_count > 100 else "300g",
-                    "variety_count": lambda count: "280g" if count > 2 else "300g",
-                    "total_items": lambda total_items: "550g" if total_items <= 3 else (
-                        "350g" if total_items >= 3 else "300g")
-                }
-            },
+                    "per_person": lambda total_items: "550g" if total_items == 1 else ("250g" if total_items > 3 else "300g"),
+                    #"per_person": lambda total_guest_count: "250g" if total_guest_count > 100 else "300g",
+                    "variety_count": lambda count: "280g" if count > 2 else "350g",
+                    "total_items": lambda total_items: ("550g" if total_items == 1 else
+                                                        "350g" if total_items == 2 else
+                                                        "320g" if total_items <= 4 else
+                                                        "280g")
+                }},
             "Welcome_Drinks": {
                 "min_quantity": "100ml",
                 "max_quantity": "120ml",
@@ -539,7 +544,10 @@ class FoodCategoryRules:
         if 'max_quantity' in quantity_rule:
             max_qty =extract_quantity_value(quantity_rule['max_quantity'])  # FIXED
             base_quantity = min(base_quantity, max_qty)
-        
+        if category == 'Biryani' and 'total_items' in quantity_rule.get('adjustments', {}):
+            total_items = menu_context['total_items']
+            adjusted_qty_str = quantity_rule['adjustments']['total_items'](total_items)
+            base_quantity = self.extract_quantity_value(adjusted_qty_str)
         return {
             'quantity': base_quantity,
             'unit': base_unit,
