@@ -25,16 +25,17 @@ from food_predictor.synthetic.migration_utils import (
     create_mostly_ai_config_template,
     cleanup_tonic_references
 )
+log_file_handler = logging.FileHandler('mostly_migration.log', encoding='utf-8')
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(logging.Formatter('%(message)s')) # Simple format for console
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('mostly_migration.log'),
-        logging.StreamHandler()
-    ]
-)
+        log_file_handler,
+        console_handler
+    ])
 logger = logging.getLogger(__name__)
 
 def run_migration_checks() -> bool:

@@ -37,7 +37,16 @@ class MostlyAIGenerator:
         
         # Make a copy to avoid modifying original
         df_clean = df5_data.copy()
-        
+        if 'Classification' in df_clean.columns:
+            # If the item is 'Veg', set Veg_Count to the total guest count for that row. Otherwise, 0.
+            df_clean['Veg_Count'] = df_clean.apply(
+                lambda row: row['total_guest_count'] if row['Classification'] == 'Veg' else 0,
+                axis=1
+            )
+        else:
+            # As a fallback, create the column with 0 if no 'Classification' column is found.
+            df_clean['Veg_Count'] = 0
+        # --- END OF FIX --
         # 1. Handle missing values strategically
         df_clean['Veg_Count'] = df_clean['Veg_Count'].fillna(
             df_clean['total_guest_count'] * 0.4  # Default 40% vegetarian
@@ -186,38 +195,38 @@ class MostlyAIGenerator:
         
         return self.generator_config
     
-    def train_generator(self, df_prepared: pd.DataFrame) -> bool:
+    # In food_predictor/synthetic/mostly_generator.py
+
+
+    # In food_predictor/synthetic/mostly_generator.py
+    # In food_predictor/synthetic/mostly_generator.py
+
+    def train_generator(self, data_path: str) -> bool: # Accept a string path
         """
-        Train Mostly AI generator on prepared DF5 data.
-        
-        Args:
-            df_prepared: Prepared training dataset
-            
-        Returns:
-            Success status
+        Train Mostly AI generator on prepared DF5 data using a file path.
         """
         logger.info("Training Mostly AI generator...")
-        
         try:
-            # Create generator with configuration
-            self.trained_model = self.client.generators.create(
-                name="DF5_Catering_Generator",
-                data=df_prepared,
-                config=self.generator_config
+            self.trained_model = self.client.train(
+                #data=data_path,  # Use the file path here
+                config=self.generator_config,
+                #name="DF5 Catering Generator v6"
             )
-            
-            # Wait for training to complete
-            self.trained_model.wait_until_ready()
-            
-            # Get training metrics
-            metrics = self.trained_model.get_quality_metrics()
-            logger.info(f"Training completed. Quality score: {metrics.get('overall_score', 'N/A')}")
-            
+
+            if hasattr(self.trained_model, 'wait_until_ready'):
+                self.trained_model.wait_until_ready()
+
+            logger.info("Training completed successfully!")
             return True
-            
+
         except Exception as e:
             logger.error(f"Training failed: {str(e)}")
+            # Clean up the temporary file if training fails
+            import os
+            if os.path.exists(data_path):
+                os.remove(data_path)
             return False
+
     
     def generate_synthetic_data(self, num_records: int) -> pd.DataFrame:
         """
@@ -317,15 +326,31 @@ class MostlyAIDataAugmentor:
         
         # Step 1: Prepare data
         df_prepared = self.generator.prepare_df5_data(df5_data)
+        # --- ADD THIS SECTION TO FIX THE ERROR ---
+        # Identify categories with more than one member
+        category_counts = df_prepared['Category'].value_counts()
+        valid_categories = category_counts[category_counts > 1].index.tolist()
         
+        # Filter the dataframe to only include valid categories
+        df_filtered = df_prepared[df_prepared['Category'].isin(valid_categories)]
+        logger.info(f"Filtered out rare categories: {len(df_prepared)} → {len(df_filtered)} records")
+        # --- END OF FIX ---
         # Step 2: Split for validation
         train_data, val_data = train_test_split(
-            df_prepared,
+            df_filtered,
             test_size=validation_split,
-            stratify=df_prepared['Category'],
+            stratify=df_filtered['Category'],
             random_state=42
         )
+            # --- START OF NEW CODE ---
+        # Save the training data to a temporary CSV file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp:
+            train_data.to_csv(tmp.name, index=False)
+            temp_data_path = tmp.name
         
+        logger.info(f"Saved prepared training data to temporary file: {temp_data_path}")
+        # --- END OF NEW CODE ---
+
         # Step 3: Configure and train
         self.generator.configure_synthetic_generation(train_data)
         success = self.generator.train_generator(train_data)
