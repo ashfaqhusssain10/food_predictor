@@ -4,7 +4,7 @@ pcs_conversion ={
   "Aloo Tikki": [40, 40],#ok1
   "Almond Cake":[80,80],#ok1
   "Angoori Gulab Jamun": [35, 70],#ok1
-  "Apricot Delight": [60, 60],#ok1
+  "Apricot Delight": [60, 120],#ok1
   "Apricot Delight (Eggless)": [45, 45],
   "Aratikaya Bajji": [75, 75],#ok1
   "Assorted Pastries":[70,70],#ok1
@@ -29,6 +29,7 @@ pcs_conversion ={
   "Butterscotch Cake": [80, 80],#ok1
   "Butterscotch Pastry": [70, 70],#ok1
   "Chapati": [40, 40],#ok1
+  "Croissant":[40,60],
   "Cheese Nuggets": [40, 60],#ok1
   "Chicken Nuggets":[40,40],##
   "Sauteed Grilled Chicken Sausage": [100, 100],#
@@ -85,7 +86,7 @@ pcs_conversion ={
   "Golden Coin": [30, 50],#
   #"Grilled Chicken Wings": [40, 40],
   "Grilled Sandwich": [130, 130],#ok1
-  "Gulab Jamun": [40, 40],#ok1
+  "Gulab Jamun": [40, 60],#ok1
   "Hara Bara Kebab": [30, 50],#ok
   "Hash Brown": [25, 50],#ok
   "Hyderabadi Naan": [120, 120],#ok
@@ -121,7 +122,7 @@ pcs_conversion ={
   "Plain Naan": [85, 85],#
   "Plum Cake": [100, 100],#
   "Plain Cake": [100, 100],#
-  "Poornam Boorelu": [40, 40],#
+  "Poornam Boorelu": [40, 80],#
   #"Potato Skins": [45, 90],
   "Pineapple Cheese Skewers": [30,40],#1
   #"Potato Smilies": [10, 20],

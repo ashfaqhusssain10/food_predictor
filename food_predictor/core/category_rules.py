@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Union, Tuple, Any
 import re
 import logging
 logger = logging.getLogger(__name__)
-from food_predictor.core.menu_analyzer import MenuAnalyzer
+#from food_predictor.core.menu_analyzer import MenuAnalyzer
 # Import previously extracted utility functions
 from food_predictor.utils.quantity_utils import (
     extract_quantity_value,
@@ -15,7 +15,7 @@ from food_predictor.utils.quantity_utils import (
 class FoodCategoryRules:
     def __init__(self):
         logger.info("Initializing FoodCategoryRules")
-        self.menu_context = {}
+        #self.menu_context = {}
         self.category_rules = self._initialize_category_rules()
         self.category_dependencies = self._initialize_category_dependencies()
         self.meal_type_modifiers = self._initialize_meal_type_modifiers()
@@ -30,11 +30,10 @@ class FoodCategoryRules:
                 "adjustments": {
                     "per_person": lambda total_items: "550g" if total_items == 1 else ("250g" if total_items > 3 else "300g"),
                     #"per_person": lambda total_guest_count: "250g" if total_guest_count > 100 else "300g",
-                    "variety_count": lambda count: "280g" if count > 2 else "350g",
-                    "total_items": lambda total_items: ("550g" if total_items == 1 else
-                                                        "350g" if total_items == 2 else
-                                                        "320g" if total_items <= 4 else
-                                                        "280g")
+                    #"variety_count": lambda count: "280g" if count > 2 else "350g",
+                    "total_items": lambda total_items: ("550g" if total_items <= 3 else
+                                                        "400g" if total_items <= 9 else
+                                                        "350g")
                 }},
             "Welcome_Drinks": {
                 "min_quantity": "100ml",
@@ -100,7 +99,7 @@ class FoodCategoryRules:
                 }
             },
             "Soups": {
-                "min_quantity": "80ml",
+                "min_quantity": "60ml",
                 "max_quantity": "120ml",
                 "default_quantity": "100ml",
                 "vc_price": 150,
@@ -115,9 +114,9 @@ class FoodCategoryRules:
                 }
             },
             "Crispers": {
-                "min_quantity": "5g",
-                "max_quantity": "5g",
-                "default_quantity": "5g",
+                "min_quantity": "10g",
+                "max_quantity": "20g",
+                "default_quantity": "15g",
                 "vc_price": 40,
             },
             "Fried_Rice": {
@@ -186,7 +185,7 @@ class FoodCategoryRules:
     }
             },
             "Appetizers": {
-                "min_quantity": "80g",
+                "min_quantity": "50g",
                 "max_quantity": "120g",
                 "default_quantity": "120g",
                 "vc_price": 270,
@@ -213,14 +212,14 @@ class FoodCategoryRules:
                 "vc_price": 80,
             },
             "Curries": {
-                "min_quantity": "120g",
+                "min_quantity": "80g",
                 "max_quantity": "180g",
                 "default_quantity": "120g",
                 "vc_price": 270,
                 "adjustments": {
                     "variety_count": lambda count: {
-                        1: "120g",
-                        2: "100g",
+                        1: "150g",
+                        2: "120g",
                         3: "80g",
                         4: "80g",
                         5: "80g",
@@ -303,7 +302,7 @@ class FoodCategoryRules:
             },
             "Dips": {
                 "min_quantity": "10g",
-                "max_quantity": "20pcs",
+                "max_quantity": "20g",
                 "default_quantity": "15g",
                 "vc_price": 50,
             },
@@ -390,9 +389,9 @@ class FoodCategoryRules:
 
     def _initialize_meal_type_modifiers(self) -> Dict[str, float]:
         return {
-            "Breakfast": 0.8,
+            "Breakfast": 1.0,
             "Lunch": 1.0,
-            "Hi-Tea": 0.9,
+            "Hi-Tea": 1.0,
             "Dinner": 1.0
         }
 
@@ -510,9 +509,9 @@ class FoodCategoryRules:
             
             # Contextual adjustments based on main item
             if category == 'Appetizers' and primary_main_category in ['Biryani', 'Rice']:
-                base_quantity *= 0.9  # Slightly reduce if main item is substantial
+                base_quantity *= 1.0  # Slightly reduce if main item is substantial
             elif category == 'Sides' and primary_main_category in ['Biryani', 'Pulav']:
-                base_quantity *= 1.1  # Slightly increase complementary sides
+                base_quantity *= 1.0 # Slightly increase complementary sides
         
         # Veg/Non-veg guest considerations
         veg_guest_ratio = menu_context['veg_guest_count'] / menu_context['total_guest_count']
@@ -523,7 +522,7 @@ class FoodCategoryRules:
             base_quantity *= (1 + (0.2 * (1 - veg_guest_ratio)))
         elif is_veg == 'non-veg':
             # Adjust non-veg items based on non-veg guest ratio
-            base_quantity *= (1 - (0.2 * veg_guest_ratio))
+            base_quantity *= (1 + (0.2 * veg_guest_ratio))
         
         # Additional per-person adjustments if available
         if 'adjustments' in quantity_rule and 'per_person' in quantity_rule['adjustments']:
@@ -547,7 +546,7 @@ class FoodCategoryRules:
         if category == 'Biryani' and 'total_items' in quantity_rule.get('adjustments', {}):
             total_items = menu_context['total_items']
             adjusted_qty_str = quantity_rule['adjustments']['total_items'](total_items)
-            base_quantity = self.extract_quantity_value(adjusted_qty_str)
+            base_quantity = extract_quantity_value(adjusted_qty_str)
         return {
             'quantity': base_quantity,
             'unit': base_unit,
