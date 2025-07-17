@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import logging
 from typing import Dict, List, Optional, Tuple
-from mostlyai import MostlyAI
+from mostlyai.sdk import MostlyAI
 
 logger = logging.getLogger(__name__)
 
