@@ -70,7 +70,7 @@ def load_df5_data() -> pd.DataFrame:
     """Load and validate DF5 dataset"""
     logger.info("📂 Loading DF5 dataset...")
     
-    df5_path = "DF5.xlsx"
+    df5_path = "food_predictor/food_predictor/data/datasets/DF5.xlsx"
     if not os.path.exists(df5_path):
         raise FileNotFoundError(f"DF5 dataset not found at {df5_path}")
     
