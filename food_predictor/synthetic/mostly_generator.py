@@ -246,7 +246,8 @@ class MostlyAIGenerator:
         
         try:
             # Generate synthetic data
-            synthetic_data = self.trained_model.generate(
+            synthetic_data = self.client.synthesize(
+                generator=self.trained_model,
                 size=num_records,
                 seed=42  # For reproducibility
             )
@@ -354,7 +355,7 @@ class MostlyAIDataAugmentor:
 
         # Step 3: Configure and train
         self.generator.configure_synthetic_generation(train_data)
-        success = self.generator.train_generator(train_data)
+        success = self.generator.train_generator(temp_data_path)
         
         if not success:
             raise RuntimeError("Failed to train Mostly AI generator")

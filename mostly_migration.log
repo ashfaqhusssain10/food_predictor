@@ -367,3 +367,305 @@
 2025-07-17 18:54:16,779 - food_predictor.synthetic.mostly_generator - ERROR - Generation failed: 'Generator' object has no attribute 'generate'
 2025-07-17 18:54:16,779 - __main__ - ERROR - Synthetic data generation failed: 'Generator' object has no attribute 'generate'
 2025-07-17 18:54:16,780 - __main__ - ERROR - Migration failed: 'Generator' object has no attribute 'generate'
+2025-07-17 19:05:27,839 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 19:05:39,646 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 19:05:39,654 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_190539
+2025-07-17 19:05:39,654 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 19:05:39,662 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 19:05:39,662 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 19:05:41,587 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 19:05:41,595 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 19:05:42,558 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 19:05:43,367 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 19:05:45,333 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 19:05:45,334 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 19:05:45,473 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 19:05:45,478 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 19:05:45,558 - food_predictor.synthetic.mostly_generator - INFO - Saved prepared training data to temporary file: C:\Users\SYEDAS~1\AppData\Local\Temp\tmpya17qmrs.csv
+2025-07-17 19:05:45,558 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 19:05:45,558 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator...
+2025-07-17 19:05:45,558 - food_predictor.synthetic.mostly_generator - ERROR - Training failed: Either config or data must be provided, but not both
+2025-07-17 19:05:45,558 - __main__ - ERROR - Synthetic data generation failed: Failed to train Mostly AI generator
+2025-07-17 19:05:45,558 - __main__ - ERROR - Migration failed: Failed to train Mostly AI generator
+2025-07-17 19:07:40,261 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 19:07:40,269 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_190740
+2025-07-17 19:07:40,269 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 19:07:40,277 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 19:07:40,278 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 19:07:42,123 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 19:07:42,132 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 19:07:43,085 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 19:07:43,963 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 19:07:46,128 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 19:07:46,128 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 19:07:46,252 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 19:07:46,261 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 19:07:46,382 - food_predictor.synthetic.mostly_generator - INFO - Saved prepared training data to temporary file: C:\Users\SYEDAS~1\AppData\Local\Temp\tmpddtqvggb.csv
+2025-07-17 19:07:46,382 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 19:07:46,382 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator...
+2025-07-17 19:07:49,009 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 19:07:49,018 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 19:07:50,140 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training/start "HTTP/1.1 200 "
+2025-07-17 19:07:50,915 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:07:53,681 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:07:56,588 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:07:59,356 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:02,124 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:06,932 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:09,797 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:12,570 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:15,636 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:18,460 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:21,377 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:24,098 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:27,011 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:29,720 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:32,390 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:35,300 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:39,437 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:42,819 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:45,687 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:48,831 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:08:57,339 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:06,441 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:14,636 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:17,732 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:20,773 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:23,856 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:26,831 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:29,824 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:33,400 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:39,725 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:42,717 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:45,780 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:48,747 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:51,632 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:54,681 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:09:57,743 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:01,865 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:05,857 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:09,024 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:13,212 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:16,213 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:20,914 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 19:10:23,989 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training "HTTP/1.1 200 "
+2025-07-17 21:20:41,751 - food_predictor.synthetic.mostly_generator - ERROR - Training failed: An error occurred while requesting URL('https://app.mostly.ai/api/v2/generators/c023462a-c1ed-4695-8b0d-fd093d01cd9a/training').
+2025-07-17 21:20:41,799 - __main__ - ERROR - Synthetic data generation failed: Failed to train Mostly AI generator
+2025-07-17 21:20:41,820 - __main__ - ERROR - Migration failed: Failed to train Mostly AI generator
+2025-07-17 21:37:37,452 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 21:37:37,452 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_213737
+2025-07-17 21:37:37,452 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 21:37:37,461 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 21:37:37,461 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 21:37:39,410 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 21:37:39,418 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 21:37:40,423 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 21:37:41,101 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 21:37:43,228 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 21:37:43,228 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 21:37:43,358 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 21:37:43,358 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 21:37:43,457 - food_predictor.synthetic.mostly_generator - INFO - Saved prepared training data to temporary file: C:\Users\SYEDAS~1\AppData\Local\Temp\tmp5vxf0z6p.csv
+2025-07-17 21:37:43,457 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 21:37:43,457 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator...
+2025-07-17 21:37:46,637 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 21:37:46,640 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 21:37:49,845 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training/start "HTTP/1.1 200 "
+2025-07-17 21:37:50,460 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:37:53,140 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:37:55,892 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:37:58,585 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:01,267 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:03,908 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:06,535 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:09,219 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:12,035 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:14,706 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:17,336 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:20,127 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:22,845 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:25,519 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:28,164 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:30,897 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:33,606 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:36,237 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:38,863 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:41,508 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:44,313 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:46,983 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:49,621 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:52,345 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:54,971 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:38:57,605 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:00,250 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:02,908 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:05,562 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:08,263 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:10,972 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:13,787 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:16,572 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:19,193 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:21,837 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:24,492 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:27,126 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:29,830 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:32,830 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:35,455 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:38,077 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:40,774 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:43,401 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:46,049 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:48,774 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:51,420 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:54,048 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:56,802 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:39:59,506 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:02,199 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:04,827 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:07,466 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:10,100 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:12,732 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:15,357 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:17,981 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:20,610 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:23,298 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:25,925 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:28,567 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:31,192 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:33,928 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:36,682 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:39,368 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:42,013 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:44,645 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:47,266 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:49,895 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:52,601 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:55,395 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:40:58,004 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:01,643 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:04,259 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:06,934 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:09,567 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:12,227 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:14,858 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:17,480 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:20,087 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:22,782 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a/training "HTTP/1.1 200 "
+2025-07-17 21:41:24,465 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a "HTTP/1.1 200 "
+2025-07-17 21:41:24,618 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 21:41:25,393 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/eda10b96-3320-4e20-a474-04747d28c97a "HTTP/1.1 200 "
+2025-07-17 21:41:25,393 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 21:41:25,393 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 21:41:25,393 - food_predictor.synthetic.mostly_generator - INFO - Generating 9662 synthetic records...
+2025-07-17 21:41:25,409 - food_predictor.synthetic.mostly_generator - ERROR - Generation failed: 'Generator' object has no attribute 'synthesize'
+2025-07-17 21:41:25,409 - __main__ - ERROR - Synthetic data generation failed: 'Generator' object has no attribute 'synthesize'
+2025-07-17 21:41:25,409 - __main__ - ERROR - Migration failed: 'Generator' object has no attribute 'synthesize'
+2025-07-17 22:18:13,759 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 22:18:13,759 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_221813
+2025-07-17 22:18:13,768 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 22:18:13,776 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 22:18:13,776 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 22:18:15,686 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 22:18:15,692 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 22:18:16,529 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 22:18:17,149 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 22:18:19,239 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 22:18:19,239 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 22:18:19,371 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 22:18:19,378 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 22:18:19,468 - food_predictor.synthetic.mostly_generator - INFO - Saved prepared training data to temporary file: C:\Users\SYEDAS~1\AppData\Local\Temp\tmpfbzqaz2x.csv
+2025-07-17 22:18:19,468 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 22:18:19,468 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator...
+2025-07-17 22:18:22,277 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 22:18:22,277 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 22:18:23,223 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training/start "HTTP/1.1 200 "
+2025-07-17 22:18:23,876 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:26,600 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:29,311 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:32,027 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:34,927 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:37,732 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:40,464 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:43,094 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:45,719 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:48,327 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:50,983 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:53,621 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:56,242 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:18:58,865 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:01,495 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:04,150 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:06,771 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:09,400 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:12,007 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:14,680 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:17,446 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:20,079 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:22,698 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:25,322 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:27,950 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:30,549 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:33,238 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:35,880 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:38,599 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:41,322 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:43,965 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:46,590 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:49,293 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:52,075 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:54,692 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:57,311 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:19:59,991 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:02,625 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:05,243 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:07,880 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:10,510 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:13,143 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:15,746 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:18,380 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:20,998 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:23,648 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:26,343 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:29,164 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:31,819 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:34,433 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:37,105 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:39,823 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:42,482 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:45,106 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:47,746 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:50,357 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:52,974 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:55,607 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:20:58,230 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:00,872 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:03,493 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:06,097 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:08,715 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:11,333 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:14,188 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:16,870 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:19,531 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:22,163 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:24,791 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:27,407 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:30,017 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:32,638 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:35,336 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:38,165 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:40,881 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:43,534 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:46,327 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:48,959 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:51,576 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:54,329 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:57,033 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30/training "HTTP/1.1 200 "
+2025-07-17 22:21:58,776 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30 "HTTP/1.1 200 "
+2025-07-17 22:21:58,932 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 22:21:59,574 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/5b4692ec-b146-4ca7-bd4f-758f5404cb30 "HTTP/1.1 200 "
+2025-07-17 22:21:59,732 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 22:21:59,736 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 22:21:59,736 - food_predictor.synthetic.mostly_generator - INFO - Generating 9662 synthetic records...
+2025-07-17 22:21:59,736 - food_predictor.synthetic.mostly_generator - ERROR - Generation failed: 'MostlyAI' object has no attribute 'synthesize'
+2025-07-17 22:21:59,736 - __main__ - ERROR - Synthetic data generation failed: 'MostlyAI' object has no attribute 'synthesize'
+2025-07-17 22:21:59,736 - __main__ - ERROR - Migration failed: 'MostlyAI' object has no attribute 'synthesize'
