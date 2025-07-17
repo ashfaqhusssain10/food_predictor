@@ -2,6 +2,7 @@
 import os
 import pandas as pd
 import logging
+import tempfile
 from typing import Dict, List, Optional, Tuple
 from mostlyai.sdk import MostlyAI
 
@@ -208,8 +209,8 @@ class MostlyAIGenerator:
         logger.info("Training Mostly AI generator...")
         try:
             self.trained_model = self.client.train(
-                #data=data_path,  # Use the file path here
-                config=self.generator_config,
+                data=data_path,  # Use the file path here
+                #config=self.generator_config,
                 #name="DF5 Catering Generator v6"
             )
 

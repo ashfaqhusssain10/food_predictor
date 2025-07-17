@@ -56,19 +56,4 @@ tempCodeRunnerFile.py
 
 # Ignore the entire Sagemaker folder
 Sagemaker/
-data/synthetic/mostly_ai/validation_report_20250717_171542.json
-        data/synthetic/mostly_ai/validation_report_20250717_171742.json
-        data/synthetic/mostly_ai/validation_report_20250717_172803.json
-        migration_backup/tonic_backup_20250717_171539/
-        migration_backup/tonic_backup_20250717_171740/
-        migration_backup/tonic_backup_20250717_172801/
-        migration_backup/tonic_backup_20250717_172845/
-        migration_backup/tonic_backup_20250717_175409/
-        migration_backup/tonic_backup_20250717_180037/ 
-        migration_backup/tonic_backup_20250717_180140/
-        migration_backup/tonic_backup_20250717_180202/
-        migration_backup/tonic_backup_20250717_180456/
-        migration_backup/tonic_backup_20250717_181054/
-        migration_backup/tonic_backup_20250717_181619/
-        migration_backup/tonic_backup_20250717_181831/
-        migration_backup/tonic_backup_20250717_182256/
+migration_backup/
