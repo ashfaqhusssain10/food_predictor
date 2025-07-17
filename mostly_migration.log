@@ -1,0 +1,15 @@
+2025-07-17 16:37:50,319 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_163750
+2025-07-17 16:37:50,322 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 16:37:50,324 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 16:37:54,076 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 16:37:54,093 - __main__ - ERROR - Migration failed: Missing required columns in DF5 data: ['total_guest_count']
+2025-07-17 16:39:49,877 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_163949
+2025-07-17 16:39:49,877 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 16:39:49,877 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 16:39:50,713 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 16:39:56,008 - food_predictor.core.category_rules - INFO - Initializing FoodCategoryRules
+2025-07-17 16:39:56,008 - ItemService - INFO - Building item metadata from training data
+2025-07-17 16:39:56,008 - ItemService - INFO - Building item_name mapping
+2025-07-17 16:39:56,024 - ItemService - INFO - Built mapping for 1007 item variations
+2025-07-17 16:39:56,033 - __main__ - WARNING - Model comparison test failed: 'Veg_Classification'
+2025-07-17 16:39:56,035 - __main__ - ERROR - Migration failed: 'charmap' codec can't encode character '\u2192' in position 11: character maps to <undefined>

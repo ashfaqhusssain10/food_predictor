@@ -205,7 +205,7 @@ def validate_migration_requirements() -> Dict[str, bool]:
     
     # Check data availability
     data_files = [
-        'DF5.xlsx'  # Original data file
+        'food_predictor/data/datasets/DF5.xlsx'  # Original data file
     ]
     
     requirements['data_files_available'] = all(
@@ -239,7 +239,7 @@ def create_mostly_ai_config_template() -> str:
 # Copy this file to .env and fill in your values
 
 # Mostly AI API Configuration
-MOSTLYAI_API_KEY=your_api_key_here
+MOSTLYAI_API_KEY=mostly-767d4e24045e5ae6064ec3d20cf7c19041a434eea109e707ee032bab47795777
 MOSTLYAI_BASE_URL=https://api.mostly.ai
 
 # Data Generation Parameters
