@@ -669,3 +669,361 @@
 2025-07-17 22:21:59,736 - food_predictor.synthetic.mostly_generator - ERROR - Generation failed: 'MostlyAI' object has no attribute 'synthesize'
 2025-07-17 22:21:59,736 - __main__ - ERROR - Synthetic data generation failed: 'MostlyAI' object has no attribute 'synthesize'
 2025-07-17 22:21:59,736 - __main__ - ERROR - Migration failed: 'MostlyAI' object has no attribute 'synthesize'
+2025-07-17 22:37:30,693 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 22:37:30,693 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_223730
+2025-07-17 22:37:30,701 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 22:37:30,709 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 22:37:30,709 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 22:37:32,703 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 22:37:32,711 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 22:37:33,593 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 22:37:34,200 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 22:37:36,860 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 22:37:36,862 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 22:37:37,016 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 22:37:37,021 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 22:37:37,032 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator...
+2025-07-17 22:37:37,032 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 22:37:37,179 - food_predictor.synthetic.mostly_generator - ERROR - Training failed: 5 validation errors for GeneratorConfig
+tables.0.columns.8.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.9.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.10.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.11.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.12.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+2025-07-17 22:37:37,181 - __main__ - ERROR - Synthetic data generation failed: Failed to train Mostly AI generator
+2025-07-17 22:37:37,181 - __main__ - ERROR - Migration failed: Failed to train Mostly AI generator
+2025-07-17 22:52:28,141 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 22:52:28,144 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_225228
+2025-07-17 22:52:28,147 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 22:52:28,150 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 22:52:28,150 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 22:52:29,174 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 22:52:29,183 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 22:52:30,247 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 22:52:30,935 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 22:52:32,701 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 22:52:32,701 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 22:52:32,771 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 22:52:32,777 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 22:52:32,788 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 22:52:32,788 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 22:52:32,869 - food_predictor.synthetic.mostly_generator - ERROR - Training failed: 5 validation errors for GeneratorConfig
+tables.0.columns.8.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.9.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.10.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.11.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+tables.0.columns.12.model_encoding_type
+  Input should be 'AUTO', 'TABULAR_CATEGORICAL', 'TABULAR_NUMERIC_AUTO', 'TABULAR_NUMERIC_DISCRETE', 'TABULAR_NUMERIC_BINNED', 'TABULAR_NUMERIC_DIGIT', 'TABULAR_CHARACTER', 'TABULAR_DATETIME', 'TABULAR_DATETIME_RELATIVE', 'TABULAR_LAT_LONG', 'LANGUAGE_TEXT', 'LANGUAGE_CATEGORICAL', 'LANGUAGE_NUMERIC' or 'LANGUAGE_DATETIME' [type=enum, input_value='TABULAR_NUMERIC', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.11/v/enum
+2025-07-17 22:52:32,869 - __main__ - ERROR - Synthetic data generation failed: Failed to train Mostly AI generator
+2025-07-17 22:52:32,869 - __main__ - ERROR - Migration failed: Failed to train Mostly AI generator
+2025-07-17 23:00:43,517 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 23:00:43,519 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_230043
+2025-07-17 23:00:43,522 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 23:00:43,524 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 23:00:43,524 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 23:00:44,383 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 23:00:44,386 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 23:00:45,101 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 23:00:45,689 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 23:00:46,821 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 23:00:46,821 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 23:00:46,880 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 23:00:46,883 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 23:00:46,890 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 23:00:46,890 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 23:00:49,294 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 23:00:49,296 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:00:50,181 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training/start "HTTP/1.1 200 "
+2025-07-17 23:00:50,782 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:00:53,415 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:00:56,023 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:00:58,667 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:01,365 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:04,046 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:06,670 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:09,311 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:11,912 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:14,585 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208/training "HTTP/1.1 200 "
+2025-07-17 23:01:15,392 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208 "HTTP/1.1 200 "
+2025-07-17 23:01:15,550 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:01:16,532 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/637178c5-99b7-48cf-81a9-f76f162ac208 "HTTP/1.1 200 "
+2025-07-17 23:01:16,534 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:01:16,536 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 23:01:16,537 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 637178c5-99b7-48cf-81a9-f76f162ac208
+2025-07-17 23:01:16,537 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_ARGN (Advanced GAN)
+2025-07-17 23:01:16,538 - food_predictor.synthetic.mostly_generator - INFO - Generating 9662 synthetic records...
+2025-07-17 23:01:17,224 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/synthetic-datasets "HTTP/1.1 400 "
+2025-07-17 23:01:17,226 - food_predictor.synthetic.mostly_generator - ERROR - Generation failed: HTTP 400: Generator must be accessible and be in DONE, IN_PROGRESS, QUEUED or ON_HOLD status to create a synthetic dataset.
+2025-07-17 23:01:17,226 - __main__ - ERROR - Synthetic data generation failed: HTTP 400: Generator must be accessible and be in DONE, IN_PROGRESS, QUEUED or ON_HOLD status to create a synthetic dataset.
+2025-07-17 23:01:17,227 - __main__ - ERROR - Migration failed: HTTP 400: Generator must be accessible and be in DONE, IN_PROGRESS, QUEUED or ON_HOLD status to create a synthetic dataset.
+2025-07-17 23:20:15,070 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 23:20:15,072 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_232015
+2025-07-17 23:20:15,074 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 23:20:15,076 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 23:20:15,077 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 23:20:15,990 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 23:20:15,993 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 23:20:16,729 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 23:20:17,500 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 23:20:18,654 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 23:20:18,654 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 23:20:18,719 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 23:20:18,721 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 23:20:18,727 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 23:20:18,728 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 23:20:21,362 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 23:20:21,363 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:20:22,303 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training/start "HTTP/1.1 200 "
+2025-07-17 23:20:23,044 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:25,670 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:28,315 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:30,972 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:33,618 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:36,297 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:38,917 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:41,555 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:44,404 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:47,090 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2/training "HTTP/1.1 200 "
+2025-07-17 23:20:47,940 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2 "HTTP/1.1 200 "
+2025-07-17 23:20:47,941 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:20:48,593 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2 "HTTP/1.1 200 "
+2025-07-17 23:20:48,754 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:20:48,755 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 23:20:48,755 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 4d21bb86-c2c2-42a3-959f-893699d749a2
+2025-07-17 23:20:48,755 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_ARGN (Advanced GAN)
+2025-07-17 23:20:48,756 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-17 23:20:49,542 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d21bb86-c2c2-42a3-959f-893699d749a2 "HTTP/1.1 200 "
+2025-07-17 23:20:49,543 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:20:49,544 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-17 23:20:49,544 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-17 23:20:49,544 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-17 23:20:49,544 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation
+2025-07-17 23:31:59,364 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 23:31:59,366 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_233159
+2025-07-17 23:31:59,368 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 23:31:59,370 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 23:31:59,371 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 23:32:00,328 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 23:32:00,334 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 23:32:01,071 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 23:32:01,701 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 23:32:02,844 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 23:32:02,844 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 23:32:02,904 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 23:32:02,908 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 23:32:02,914 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 23:32:02,915 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 23:32:05,471 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 23:32:05,474 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:32:06,360 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training/start "HTTP/1.1 200 "
+2025-07-17 23:32:07,007 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:09,689 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:12,305 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:14,922 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:17,554 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:20,361 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:23,062 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:25,711 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:28,320 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:30,961 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35/training "HTTP/1.1 200 "
+2025-07-17 23:32:31,765 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35 "HTTP/1.1 200 "
+2025-07-17 23:32:31,766 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:32:32,556 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35 "HTTP/1.1 200 "
+2025-07-17 23:32:32,557 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:32:32,558 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 23:32:32,559 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 0f278e7e-c85e-4d10-afa1-98cc5df0bb35
+2025-07-17 23:32:32,559 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_ARGN (Advanced GAN)
+2025-07-17 23:32:32,559 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-17 23:32:33,351 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/0f278e7e-c85e-4d10-afa1-98cc5df0bb35 "HTTP/1.1 200 "
+2025-07-17 23:32:33,352 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:32:33,352 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-17 23:32:33,352 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-17 23:32:33,354 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-17 23:32:33,354 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation
+2025-07-17 23:55:42,131 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 23:55:42,135 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_235542
+2025-07-17 23:55:42,137 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 23:55:42,139 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 23:55:42,140 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 23:55:43,142 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 23:55:43,144 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 23:55:43,979 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 23:55:44,638 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 23:55:45,948 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 23:55:45,948 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 23:55:46,007 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 23:55:46,011 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 23:55:46,020 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 23:55:46,021 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 23:55:48,652 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 23:55:48,653 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:55:49,712 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training/start "HTTP/1.1 200 "
+2025-07-17 23:55:50,403 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:55:53,076 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:55:55,686 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:55:58,323 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:00,947 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:03,582 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:06,208 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:08,812 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:11,451 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:14,057 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99/training "HTTP/1.1 200 "
+2025-07-17 23:56:14,716 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99 "HTTP/1.1 200 "
+2025-07-17 23:56:14,876 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:56:15,652 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99 "HTTP/1.1 200 "
+2025-07-17 23:56:15,652 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:56:15,653 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 23:56:15,653 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 9034d6c9-d50d-45b4-b128-b49a653f7b99
+2025-07-17 23:56:15,653 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_ARGN (Advanced GAN)
+2025-07-17 23:56:15,654 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-17 23:56:16,444 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/9034d6c9-d50d-45b4-b128-b49a653f7b99 "HTTP/1.1 200 "
+2025-07-17 23:56:16,445 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:56:16,446 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-17 23:56:16,446 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-17 23:56:16,446 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-17 23:56:16,447 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation
+2025-07-17 23:57:35,866 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-17 23:57:35,868 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250717_235735
+2025-07-17 23:57:35,870 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-17 23:57:35,872 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-17 23:57:35,873 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-17 23:57:36,696 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-17 23:57:36,699 - __main__ - INFO - 🤖 Generating synthetic data (target: 3.0x original size)...
+2025-07-17 23:57:37,430 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-17 23:57:38,060 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-17 23:57:39,216 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 18132 records
+2025-07-17 23:57:39,216 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-17 23:57:39,282 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-17 23:57:39,284 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-17 23:57:39,291 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-17 23:57:39,291 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-17 23:57:41,870 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-17 23:57:41,871 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:57:42,756 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training/start "HTTP/1.1 200 "
+2025-07-17 23:57:43,426 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:46,083 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:48,742 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:51,667 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:54,366 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:56,988 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:57:59,625 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:58:02,244 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:58:04,869 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:58:07,508 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0/training "HTTP/1.1 200 "
+2025-07-17 23:58:08,301 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0 "HTTP/1.1 200 "
+2025-07-17 23:58:08,302 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:58:08,928 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0 "HTTP/1.1 200 "
+2025-07-17 23:58:09,086 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:58:09,087 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-17 23:58:09,087 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 243c3ee3-7007-40d3-ad3f-5bf6b750cfe0
+2025-07-17 23:58:09,087 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_BASIC(Basic GAN)
+2025-07-17 23:58:09,087 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-17 23:58:09,727 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/243c3ee3-7007-40d3-ad3f-5bf6b750cfe0 "HTTP/1.1 200 "
+2025-07-17 23:58:09,888 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-17 23:58:09,888 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-17 23:58:09,889 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-17 23:58:09,889 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-17 23:58:09,889 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation
+2025-07-18 00:04:18,821 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-18 00:04:18,823 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250718_000418
+2025-07-18 00:04:18,825 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-18 00:04:18,827 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-18 00:04:18,828 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-18 00:04:19,719 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-18 00:04:19,722 - __main__ - INFO - 🤖 Generating synthetic data (target: 1.5x original size)...
+2025-07-18 00:04:20,448 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-18 00:04:21,045 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-18 00:04:22,219 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 9066 records
+2025-07-18 00:04:22,219 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-18 00:04:22,281 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-18 00:04:22,284 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-18 00:04:22,291 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-18 00:04:22,291 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-18 00:04:25,117 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-18 00:04:25,118 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 00:04:26,037 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training/start "HTTP/1.1 200 "
+2025-07-18 00:04:26,647 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:29,259 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:31,872 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:34,711 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:37,338 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:39,969 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:42,583 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:45,283 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:48,028 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:50,686 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f/training "HTTP/1.1 200 "
+2025-07-18 00:04:51,457 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f "HTTP/1.1 200 "
+2025-07-18 00:04:51,459 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 00:04:52,231 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f "HTTP/1.1 200 "
+2025-07-18 00:04:52,232 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 00:04:52,233 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-18 00:04:52,233 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: 4d754195-6df4-4961-b777-37f3934dd08f
+2025-07-18 00:04:52,233 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_BASIC(Basic GAN)
+2025-07-18 00:04:52,234 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-18 00:04:53,009 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/4d754195-6df4-4961-b777-37f3934dd08f "HTTP/1.1 200 "
+2025-07-18 00:04:53,010 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 00:04:53,011 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-18 00:04:53,011 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-18 00:04:53,011 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-18 00:04:53,012 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation
+2025-07-18 01:20:43,235 - __main__ - INFO - 🔍 Running pre-migration checks...
+2025-07-18 01:20:43,251 - food_predictor.synthetic.migration_utils - INFO - Creating backup at C:\Users\Syed Ashfaque Hussai\OneDrive\Desktop\food_predictor\migration_backup\tonic_backup_20250718_012043
+2025-07-18 01:20:43,251 - food_predictor.synthetic.migration_utils - INFO - Backed up tonic_generator.py
+2025-07-18 01:20:43,251 - food_predictor.synthetic.migration_utils - INFO - Backed up train_with_synthetic.py
+2025-07-18 01:20:43,251 - __main__ - INFO - 📂 Loading DF5 dataset...
+2025-07-18 01:20:44,436 - __main__ - INFO - Loaded DF5 data: 6044 records, 14 columns
+2025-07-18 01:20:44,460 - __main__ - INFO - 🤖 Generating synthetic data (target: 1.5x original size)...
+2025-07-18 01:20:45,274 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/about "HTTP/1.1 200 "
+2025-07-18 01:20:45,931 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/users/me "HTTP/1.1 200 "
+2025-07-18 01:20:52,124 - food_predictor.synthetic.mostly_generator - INFO - Starting DF5 augmentation: 6044 → 9066 records
+2025-07-18 01:20:52,124 - food_predictor.synthetic.mostly_generator - INFO - Preparing DF5 data for Mostly AI training
+2025-07-18 01:20:52,184 - food_predictor.synthetic.mostly_generator - INFO - Data preparation complete: 6044 → 6040 valid records
+2025-07-18 01:20:52,202 - food_predictor.synthetic.mostly_generator - INFO - Filtered out rare categories: 6040 → 6039 records
+2025-07-18 01:20:52,210 - food_predictor.synthetic.mostly_generator - INFO - Training Mostly AI generator with Advanced GAN (TabularARGN)...
+2025-07-18 01:20:52,210 - food_predictor.synthetic.mostly_generator - INFO - Configuring Mostly AI generation settings
+2025-07-18 01:20:55,023 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators "HTTP/1.1 200 "
+2025-07-18 01:20:55,023 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 01:20:55,872 - httpx - INFO - HTTP Request: POST https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training/start "HTTP/1.1 200 "
+2025-07-18 01:20:56,483 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:20:59,099 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:01,704 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:04,321 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:06,938 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:09,542 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:12,258 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:14,872 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:17,474 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:20,145 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc/training "HTTP/1.1 200 "
+2025-07-18 01:21:21,036 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc "HTTP/1.1 200 "
+2025-07-18 01:21:21,038 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 01:21:21,861 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc "HTTP/1.1 200 "
+2025-07-18 01:21:21,861 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 01:21:21,861 - food_predictor.synthetic.mostly_generator - INFO - Training completed successfully!
+2025-07-18 01:21:21,861 - food_predictor.synthetic.mostly_generator - INFO - Generator ID: bb153c48-1b07-49f5-a080-2fe0985912dc
+2025-07-18 01:21:21,861 - food_predictor.synthetic.mostly_generator - INFO - Using model: TABULAR_BASIC(Basic GAN)
+2025-07-18 01:21:21,861 - food_predictor.synthetic.mostly_generator - INFO - Waiting for generator to reach DONE status...
+2025-07-18 01:21:22,745 - httpx - INFO - HTTP Request: GET https://app.mostly.ai/api/v2/generators/bb153c48-1b07-49f5-a080-2fe0985912dc "HTTP/1.1 200 "
+2025-07-18 01:21:22,756 - mostlyai.sdk.client.base - WARNING - ignoring unrecognized fields for GeneratorUsage: noOfThreads
+2025-07-18 01:21:22,756 - food_predictor.synthetic.mostly_generator - INFO - Generator status: ProgressStatus.failed
+2025-07-18 01:21:22,756 - food_predictor.synthetic.mostly_generator - ERROR - ❌ Generator training failed with status: ProgressStatus.failed
+2025-07-18 01:21:22,757 - __main__ - ERROR - Synthetic data generation failed: Generator is not ready for synthetic data generation
+2025-07-18 01:21:22,757 - __main__ - ERROR - Migration failed: Generator is not ready for synthetic data generation

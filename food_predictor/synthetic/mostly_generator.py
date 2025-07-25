@@ -20,9 +20,12 @@ class MostlyAIGenerator:
         if not self.api_key:
             raise ValueError("Mostly AI API key required. Set MOSTLYAI_API_KEY environment variable.")
         
-        self.client = MostlyAI(api_key=self.api_key)
+        self.client = MostlyAI(
+            api_key=self.api_key,
+            base_url='https://app.mostly.ai'
+        )
         self.generator_config = None
-        self.trained_model = None
+        self.trained_generator = None
         
     def prepare_df5_data(self, df5_data: pd.DataFrame) -> pd.DataFrame:
         """
@@ -47,7 +50,7 @@ class MostlyAIGenerator:
         else:
             # As a fallback, create the column with 0 if no 'Classification' column is found.
             df_clean['Veg_Count'] = 0
-        # --- END OF FIX --
+        
         # 1. Handle missing values strategically
         df_clean['Veg_Count'] = df_clean['Veg_Count'].fillna(
             df_clean['total_guest_count'] * 0.4  # Default 40% vegetarian
@@ -83,152 +86,122 @@ class MostlyAIGenerator:
             df_prepared: Prepared DF5 dataset
             
         Returns:
-            Configuration dictionary
+            Configuration dictionary for Mostly AI SDK 4.9.0
         """
         logger.info("Configuring Mostly AI generation settings")
         
-        # Column-specific configurations
-        column_config = {
-            # Categorical columns - preserve distributions
-            'Order_Number': {
-                'type': 'categorical',
-                'strategy': 'sequence',  # Generate unique order numbers
-                'privacy': 'shuffle'     # Shuffle to avoid exact matches
-            },
-            'Event_Type': {
-                'type': 'categorical',
-                'strategy': 'distribution_preserve',
-                'conditional_on': ['Meal_Time', 'Event_Time']  # Context dependency
-            },
-            'Meal_Time': {
-                'type': 'categorical', 
-                'strategy': 'distribution_preserve'
-            },
-            'Event_Time': {
-                'type': 'categorical',
-                'strategy': 'distribution_preserve'
-            },
-            'Item_name': {
-                'type': 'categorical',
-                'strategy': 'distribution_preserve',
-                'conditional_on': ['Category', 'Classification']  # Maintain item-category relationship
-            },
-            'Category': {
-                'type': 'categorical',
-                'strategy': 'distribution_preserve'
-            },
-            'Classification': {
-                'type': 'categorical',
-                'strategy': 'distribution_preserve'
-            },
-            
-            # Numerical columns with constraints
-            'total_guest_count': {
-                'type': 'numerical',
-                'strategy': 'distribution_preserve',
-                'constraints': {
-                    'min_value': 1,
-                    'max_value': 1000,
-                    'data_type': 'integer'
-                }
-            },
-            'Veg_Count': {
-                'type': 'numerical',
-                'strategy': 'conditional',
-                'conditional_on': ['total_guest_count'],  # Must be <= total_guest_count
-                'constraints': {
-                    'min_value': 0,
-                    'data_type': 'integer'
-                }
-            },
-            'quantity_numeric': {
-                'type': 'numerical',
-                'strategy': 'distribution_preserve',
-                'conditional_on': ['Item_name', 'Category', 'total_guest_count'],
-                'constraints': {
-                    'min_value': 0.1,
-                    'max_value': 2000.0
-                }
-            },
-            
-            # Derived columns
-            'veg_ratio': {
-                'type': 'derived',
-                'formula': 'Veg_Count / total_guest_count'
-            },
-            'items_per_order': {
-                'type': 'derived',
-                'formula': 'count(Item_name) group by Order_Number'
-            }
-        }
-        
-        # Business logic constraints
-        business_constraints = [
-            {
-                'name': 'veg_count_constraint',
-                'rule': 'Veg_Count <= total_guest_count',
-                'severity': 'error'
-            },
-            {
-                'name': 'positive_quantities',
-                'rule': 'quantity_numeric > 0',
-                'severity': 'error'
-            },
-            {
-                'name': 'valid_veg_ratio',
-                'rule': '0 <= veg_ratio <= 1',
-                'severity': 'error'
-            },
-            {
-                'name': 'item_category_consistency', 
-                'rule': 'Item_name matches Category mapping',
-                'severity': 'warning'
-            }
-        ]
-        
+        # Mostly AI SDK 4.9.0 configuration format
         self.generator_config = {
-            'columns': column_config,
-            'constraints': business_constraints,
-            'generation_method': 'deep_learning',  # Use Mostly AI's advanced GAN
-            'privacy_level': 'high',
-            'seed': 42  # For reproducibility
+            'name': 'DF5 Catering Generator - Advanced GAN',
+            'tables': [{
+                'name': 'df5_catering',
+                'data': df_prepared,
+                'columns': [
+                    # Categorical columns
+                    {'name': 'Order_Number', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Event_Type', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Meal_Time', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Event_Time', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Item_name', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Category', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'Classification', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                    {'name': 'quantity_unit', 'model_encoding_type': 'TABULAR_CATEGORICAL'},
+                     
+                   
+                    # ✅ FIXED: Numerical columns
+                    {'name': 'total_guest_count', 'model_encoding_type': 'TABULAR_NUMERIC_AUTO'},
+                    {'name': 'Veg_Count', 'model_encoding_type': 'TABULAR_NUMERIC_AUTO'},
+                    {'name': 'quantity_numeric', 'model_encoding_type': 'TABULAR_NUMERIC_AUTO'},
+                    {'name': 'veg_ratio', 'model_encoding_type': 'TABULAR_NUMERIC_AUTO'},
+                    {'name': 'items_per_order', 'model_encoding_type': 'TABULAR_NUMERIC_AUTO'}
+
+                ],
+                'tabular_model_configuration': {
+                    'model': 'AUTO',  # This is Mostly AI's advanced GAN model
+                    'max_training_time': None,  # No time limit for quality
+                    
+                }
+            }]
         }
         
         return self.generator_config
     
-    # In food_predictor/synthetic/mostly_generator.py
-
-
-    # In food_predictor/synthetic/mostly_generator.py
-    # In food_predictor/synthetic/mostly_generator.py
-
-    def train_generator(self, data_path: str) -> bool: # Accept a string path
+    def train_generator(self, df_prepared: pd.DataFrame) -> bool:
         """
-        Train Mostly AI generator on prepared DF5 data using a file path.
+        Train Mostly AI generator on prepared DF5 data.
+        
+        Args:
+            df_prepared: Prepared DF5 DataFrame
+            
+        Returns:
+            Success status
         """
-        logger.info("Training Mostly AI generator...")
+        logger.info("Training Mostly AI generator with Advanced GAN (TabularARGN)...")
+        
         try:
-            self.trained_model = self.client.train(
-                data=data_path,  # Use the file path here
-                #config=self.generator_config,
-                #name="DF5 Catering Generator v6"
+            # Configure the generator with the prepared data
+            config = self.configure_synthetic_generation(df_prepared)
+            
+            # Train using the Mostly AI client
+            # In SDK 4.9.0, we pass the config with data included
+            self.trained_generator = self.client.train(
+                config=config,
+                start=True,  # Start training immediately
+                wait=True    # Wait for training to complete
             )
-
-            if hasattr(self.trained_model, 'wait_until_ready'):
-                self.trained_model.wait_until_ready()
-
+            
             logger.info("Training completed successfully!")
+            logger.info(f"Generator ID: {self.trained_generator.id}")
+            logger.info("Using model: TABULAR_BASIC(Basic GAN)")
+            
             return True
-
+            
         except Exception as e:
             logger.error(f"Training failed: {str(e)}")
-            # Clean up the temporary file if training fails
-            import os
-            if os.path.exists(data_path):
-                os.remove(data_path)
             return False
-
     
+
+    def wait_for_generator_ready(self, generator, timeout_minutes=10):
+        """
+        Wait for generator to reach DONE status before proceeding with generation.
+        """
+        import time
+        
+        logger.info("Waiting for generator to reach DONE status...")
+        start_time = time.time()
+        timeout_seconds = timeout_minutes * 60
+        
+        while True:
+            try:
+                # Refresh generator status
+                updated_generator = self.client.generators.get(generator.id)
+                current_status = updated_generator.training_status
+                
+                logger.info(f"Generator status: {current_status}")
+                
+                # Check if generator is ready
+                if current_status == "DONE":
+                    logger.info("✅ Generator is ready for synthetic data generation!")
+                    return True
+                elif current_status in ["FAILED", "CANCELED"]:
+                    logger.error(f"❌ Generator training failed with status: {current_status}")
+                    return False
+                elif current_status in ["IN_PROGRESS", "QUEUED", "ON_HOLD"]:
+                    logger.info(f"⏳ Generator still processing (status: {current_status}), waiting...")
+                
+                # Check timeout
+                elapsed_time = time.time() - start_time
+                if elapsed_time > timeout_seconds:
+                    logger.error(f"❌ Timeout waiting for generator to be ready ({timeout_minutes} minutes)")
+                    return False
+                
+                time.sleep(5)  # Check every 5 seconds
+                
+            except Exception as e:
+                logger.error(f"Error checking generator status: {str(e)}")
+                time.sleep(10)  # Wait longer on error
+                continue
+
     def generate_synthetic_data(self, num_records: int) -> pd.DataFrame:
         """
         Generate synthetic data using trained Mostly AI model.
@@ -239,18 +212,32 @@ class MostlyAIGenerator:
         Returns:
             Generated synthetic dataset
         """
-        if not self.trained_model:
+        if not self.trained_generator:
             raise ValueError("Model not trained. Call train_generator() first.")
-        
+        # 🔧 FIX: Wait for generator to be ready before generating
+        if not self.wait_for_generator_ready(self.trained_generator):
+            raise RuntimeError("Generator is not ready for synthetic data generation")
         logger.info(f"Generating {num_records} synthetic records...")
         
         try:
-            # Generate synthetic data
-            synthetic_data = self.client.synthesize(
-                generator=self.trained_model,
-                size=num_records,
-                seed=42  # For reproducibility
+            # Generate synthetic data using the trained generator
+            synthetic_dataset = self.client.generate(
+                generator=self.trained_generator,
+                size=num_records
             )
+            
+            # Get the data as DataFrame
+            synthetic_data = synthetic_dataset.data()
+            
+            # Alternative: Use probe for quick sampling
+            # synthetic_data = self.client.probe(
+            #     generator=self.trained_generator,
+            #     size=num_records
+            # )
+            
+            # Convert to pandas DataFrame if needed
+            if not isinstance(synthetic_data, pd.DataFrame):
+                synthetic_data = pd.DataFrame(synthetic_data)
             
             # Post-process to ensure business logic
             synthetic_data = self._post_process_synthetic_data(synthetic_data)
@@ -266,16 +253,20 @@ class MostlyAIGenerator:
         """Apply post-processing to ensure business logic compliance."""
         df = synthetic_data.copy()
         
-        # Enforce constraints that Mostly AI might not perfectly capture
-        df['Veg_Count'] = df[['Veg_Count', 'total_guest_count']].min(axis=1)
-        df['veg_ratio'] = df['Veg_Count'] / df['total_guest_count']
-        df['veg_ratio'] = df['veg_ratio'].clip(0, 1)
+        # Ensure required columns exist
+        if 'Veg_Count' in df.columns and 'total_guest_count' in df.columns:
+            # Enforce constraints that Mostly AI might not perfectly capture
+            df['Veg_Count'] = df[['Veg_Count', 'total_guest_count']].min(axis=1)
+            df['veg_ratio'] = df['Veg_Count'] / df['total_guest_count']
+            df['veg_ratio'] = df['veg_ratio'].clip(0, 1)
         
-        # Reconstruct Per_person_quantity string
-        df['Per_person_quantity'] = df['quantity_numeric'].astype(str) + df['quantity_unit'].fillna('g')
+        # Reconstruct Per_person_quantity string if needed
+        if 'quantity_numeric' in df.columns and 'quantity_unit' in df.columns:
+            df['Per_person_quantity'] = df['quantity_numeric'].astype(str) + df['quantity_unit'].fillna('g')
         
         # Ensure positive quantities
-        df['quantity_numeric'] = df['quantity_numeric'].clip(lower=0.1)
+        if 'quantity_numeric' in df.columns:
+            df['quantity_numeric'] = df['quantity_numeric'].clip(lower=0.1)
         
         return df
     
@@ -294,6 +285,7 @@ class MostlyAIGenerator:
             return 'g'
         match = re.search(r'[a-zA-Z]+', str(quantity_str))
         return match.group(0) if match else 'g'
+    
 
 
 class MostlyAIDataAugmentor:
@@ -328,7 +320,7 @@ class MostlyAIDataAugmentor:
         
         # Step 1: Prepare data
         df_prepared = self.generator.prepare_df5_data(df5_data)
-        # --- ADD THIS SECTION TO FIX THE ERROR ---
+        
         # Identify categories with more than one member
         category_counts = df_prepared['Category'].value_counts()
         valid_categories = category_counts[category_counts > 1].index.tolist()
@@ -336,7 +328,7 @@ class MostlyAIDataAugmentor:
         # Filter the dataframe to only include valid categories
         df_filtered = df_prepared[df_prepared['Category'].isin(valid_categories)]
         logger.info(f"Filtered out rare categories: {len(df_prepared)} → {len(df_filtered)} records")
-        # --- END OF FIX ---
+        
         # Step 2: Split for validation
         train_data, val_data = train_test_split(
             df_filtered,
@@ -344,18 +336,10 @@ class MostlyAIDataAugmentor:
             stratify=df_filtered['Category'],
             random_state=42
         )
-            # --- START OF NEW CODE ---
-        # Save the training data to a temporary CSV file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp:
-            train_data.to_csv(tmp.name, index=False)
-            temp_data_path = tmp.name
         
-        logger.info(f"Saved prepared training data to temporary file: {temp_data_path}")
-        # --- END OF NEW CODE ---
-
-        # Step 3: Configure and train
-        self.generator.configure_synthetic_generation(train_data)
-        success = self.generator.train_generator(temp_data_path)
+        # Step 3: Train generator directly with the DataFrame
+        # No need to save to file - pass DataFrame directly
+        success = self.generator.train_generator(train_data)
         
         if not success:
             raise RuntimeError("Failed to train Mostly AI generator")

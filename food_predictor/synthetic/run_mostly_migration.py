@@ -93,7 +93,7 @@ def load_df5_data() -> pd.DataFrame:
     
     return df5_data
 
-def run_synthetic_generation(df5_data: pd.DataFrame, target_multiplier: float = 3.0) -> Dict[str, pd.DataFrame]:
+def run_synthetic_generation(df5_data: pd.DataFrame, target_multiplier: float = 1.5) -> Dict[str, pd.DataFrame]:
     """Generate synthetic data using Mostly AI"""
     logger.info(f"🤖 Generating synthetic data (target: {target_multiplier}x original size)...")
     
